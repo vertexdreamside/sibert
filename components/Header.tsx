@@ -5,10 +5,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { X, ChevronRight, Facebook, Twitter } from "lucide-react";
-import { NAV_LINKS, SITE } from "@/lib/content";
+import { X, ChevronRight, Facebook, Instagram } from "lucide-react";
+import { NAV_LINKS, type SiteInfo } from "@/lib/content";
 
-export default function Header() {
+export default function Header({ site }: { site: SiteInfo }) {
   const [open, setOpen] = useState(false);
   const [solid, setSolid] = useState(false);
   const [expanded, setExpanded] = useState<string | null>(null);
@@ -51,12 +51,12 @@ export default function Header() {
 
         <Link href="/" className="flex items-center gap-3">
           <div className={`relative ${solid ? "h-[42px]" : "h-[52px]"} w-[52px] transition-all`}>
-            <Image src={SITE.logoWhite} alt="Sibert Residence logo" fill sizes="52px" className="object-contain" />
+            <Image src={site.logoWhite} alt="Sibert Residence logo" fill sizes="52px" className="object-contain" />
           </div>
           <span className="hidden sm:block font-display text-white text-base leading-none">
-            {SITE.name}
+            {site.name}
             <small className="block font-body text-[0.62rem] tracking-[0.24em] uppercase text-gold mt-1">
-              {SITE.tagline}
+              {site.tagline}
             </small>
           </span>
         </Link>
@@ -152,27 +152,37 @@ export default function Header() {
               </ul>
 
               <div className="mt-9 pt-6 border-t border-white/10 text-granite-light text-sm space-y-2">
-                <p>{SITE.address}</p>
-                <a href={SITE.phoneHref} className="block text-sand hover:text-gold">
-                  {SITE.phone}
+                <p>{site.address}</p>
+                <a href={site.phoneHref} className="block text-sand hover:text-gold">
+                  {site.phone}
                 </a>
-                <a href={`mailto:${SITE.email}`} className="block text-sand hover:text-gold break-all">
-                  {SITE.email}
+                {site.whatsappHref && (
+                  <a
+                    href={site.whatsappHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-sand hover:text-gold"
+                  >
+                    WhatsApp: {site.whatsapp}
+                  </a>
+                )}
+                <a href={`mailto:${site.email}`} className="block text-sand hover:text-gold break-all">
+                  {site.email}
                 </a>
                 <div className="flex gap-3 pt-3">
                   <a
-                    href={SITE.social.facebook}
+                    href={site.social.facebook}
                     aria-label="Facebook"
                     className="w-9 h-9 rounded-full border border-white/25 flex items-center justify-center hover:border-gold hover:text-gold"
                   >
                     <Facebook size={15} />
                   </a>
                   <a
-                    href={SITE.social.twitter}
-                    aria-label="Twitter"
+                    href={site.social.instagram}
+                    aria-label="Instagram"
                     className="w-9 h-9 rounded-full border border-white/25 flex items-center justify-center hover:border-gold hover:text-gold"
                   >
-                    <Twitter size={15} />
+                    <Instagram size={15} />
                   </a>
                 </div>
               </div>
