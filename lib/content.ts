@@ -39,14 +39,28 @@ export const NAV_LINKS: NavLink[] = [
   { label: "Contact", href: "/contact" },
 ];
 
+/* ============================================================
+   Exterior / homepage imagery
+   ============================================================ */
+export const EXTERIOR_IMAGES = {
+  hero: "/images/exterior/building-2.jpg",
+  about: "/images/exterior/building-1.jpg",
+};
+
+/* ============================================================
+   Rooms + 2026/2027 rate card
+   (source: Sibert Residence 2026-2027 Rates, valid 01 Nov 2026 – 31 Oct 2027)
+   ============================================================ */
 export type Room = {
   slug: "superior" | "deluxe";
   name: string;
   tagline: string;
   description: string;
   bedding: string;
+  occupancy: string;
   highlights: string[];
   image: string;
+  priceFrom: number;
 };
 
 export const ROOMS: Room[] = [
@@ -57,9 +71,10 @@ export const ROOMS: Room[] = [
     description:
       "A sunlit retreat featuring a king size bed, coastal teal decor, and a private balcony with lush tropical views. Designed with cosy armchair seating and warm wooden finishes, it's the ideal space for couples or solo travellers to unwind after a day on the island.",
     bedding: "1 King Size Bed",
+    occupancy: "Max 2 Adults",
     highlights: ["Private balcony", "Plush seating area", "Airy tile flooring"],
-    image:
-      "https://sibert.sc/wp-content/uploads/2020/11/IMG-20250911-WA0090-363x363.jpg",
+    image: "/images/rooms/superior.png",
+    priceFrom: 186,
   },
   {
     slug: "deluxe",
@@ -68,12 +83,54 @@ export const ROOMS: Room[] = [
     description:
       "Generously spaced to host couples or small families, the Deluxe Room features a main plush bed plus an extra single daybed. Comes fully appointed with a private ensuite bathroom, a full wooden wardrobe, and a dedicated vanity desk.",
     bedding: "1 King Bed + 1 Single Bed",
+    occupancy: "Max 2 Adults + 1 Child (6–11 yrs)",
     highlights: ["Extra spacious layout", "Private ensuite bathroom", "Generous storage space"],
-    image:
-      "https://sibert.sc/wp-content/uploads/2020/11/IMG-20250911-WA0105-363x363.jpg",
+    image: "/images/rooms/deluxe.png",
+    priceFrom: 201,
   },
 ];
 
+export const PRICING = {
+  currency: "€",
+  validity: "1 November 2026 – 31 October 2027",
+  note: "Rates are per room, per night, inclusive of breakfast, taxes and service charge — based on 2 adults sharing.",
+  seasons: [
+    {
+      name: "Low Season",
+      dates: "1–30 Sep 2026 · 1–20 Dec 2026 · 1 May – 30 Jun 2027",
+    },
+    {
+      name: "High Season",
+      dates:
+        "1 Jul – 31 Aug 2026 · 1 Oct – 30 Nov 2026 · 10 Jan – 20 Mar 2027 · 5–30 Apr 2027 · 1 Jul – 31 Aug 2027 · 1–31 Oct 2027",
+    },
+    {
+      name: "Peak Season",
+      dates: "21 Dec 2026 – 9 Jan 2027 · 21 Mar – 4 Apr 2027",
+    },
+  ],
+  rates: [
+    { room: "Superior Room", low: 186, high: 205, peak: 240 },
+    { room: "Deluxe Room", low: 201, high: 220, peak: 255 },
+  ],
+  extras: [
+    "Half Board Supplement: €30 / night per adult, €15 / night per child (6–11 yrs)",
+    "Extra Bed Supplement: €50 / night (child 6–11 yrs only)",
+    "Early Bird Offer: 10% off in Low Season or 5% off in High Season — book 60+ days ahead, B&B basis, minimum 3-night stay",
+    "Long Stay Offer: 15% off for stays of 7+ nights — High Season only, B&B basis",
+    "Honeymooners receive a bottle of sparkling wine and a fruit platter (valid 6 months from wedding date)",
+  ],
+  occupancy:
+    "Superior Room: max 2 adults. Deluxe Room: max 2 adults + 1 child (6–11 yrs). Children under 6 stay free.",
+  cancellation: [
+    "High & Low Seasons: free cancellation 8+ days before arrival · 0–7 days: 50% charge · no-show/early departure: 100% charge",
+    "Peak Season: free cancellation 22+ days before arrival · 0–21 days: 100% charge · no-show/early departure: 100% charge",
+  ],
+};
+
+/* ============================================================
+   Services
+   ============================================================ */
 export type ServiceItem = {
   id: "boat" | "buggy" | "bike";
   name: string;
@@ -114,13 +171,64 @@ export const SERVICES: ServiceItem[] = [
   },
 ];
 
+/* ============================================================
+   Homepage gallery
+   ============================================================ */
 export const GALLERY_IMAGES = [
-  "https://sibert.sc/wp-content/uploads/2025/10/sibert-residence-b-8896.jpg",
-  "https://sibert.sc/wp-content/uploads/2025/10/sibert-residence-b-8899.jpg",
-  "https://sibert.sc/wp-content/uploads/2025/10/IMG-20250911-WA0023-scaled.jpg",
-  "https://sibert.sc/wp-content/uploads/2025/10/sibert-residence-a-19.jpg",
-  "https://sibert.sc/wp-content/uploads/2025/10/IMG-20250911-WA0165-scaled.jpg",
-  "https://sibert.sc/wp-content/uploads/2025/10/sibert-residence-c-8877.jpg",
+  "/images/exterior/building-1.jpg",
+  "/images/restaurant/cocktail-bar-terrace.jpg",
+  "/images/restaurant/dining-terrace.jpg",
+  "/images/shop/shop-crafts-2.jpg",
+  "/images/restaurant/entrance-barrels-2.jpg",
+  "/images/restaurant/bar-counter.jpg",
+];
+
+/* ============================================================
+   Restaurant & Bar — real photos with short captions
+   ============================================================ */
+export type RestaurantPhoto = {
+  title: string;
+  description: string;
+  image: string;
+};
+
+export const RESTAURANT_PHOTOS: RestaurantPhoto[] = [
+  {
+    title: "The Dining Terrace",
+    description:
+      "An open-air, thatched-roof terrace with a sea breeze running through it — the natural spot for a long, unhurried dinner.",
+    image: "/images/restaurant/dining-terrace.jpg",
+  },
+  {
+    title: "Ocean-Mural Dining Room",
+    description:
+      "A hand-painted sunset mural wraps the ceiling of the indoor dining room, giving every table an island backdrop, rain or shine.",
+    image: "/images/restaurant/dining-mural.jpg",
+  },
+  {
+    title: "The Bar",
+    description:
+      "A granite-top bar stocked with Seychellois rum, Takamaka spirits and the makings of a proper tropical cocktail.",
+    image: "/images/restaurant/bar-counter.jpg",
+  },
+  {
+    title: "Behind the Bar",
+    description:
+      "Local liqueurs and spirits lined up and ready — Tia Maria, Takamaka rum, Grand Marnier and more for the evening's cocktail list.",
+    image: "/images/restaurant/bar-bottles.jpg",
+  },
+  {
+    title: "Cocktail Bar Nook",
+    description:
+      "Tucked among the palms, our casual grill and juice bar serves fresh fruit juices, smoothies and cocktails through the day.",
+    image: "/images/restaurant/cocktail-bar-terrace.jpg",
+  },
+  {
+    title: "Welcome In",
+    description:
+      "Rum barrels dressed with fresh coconuts and hibiscus mark the entrance — a small taste of what's inside.",
+    image: "/images/restaurant/entrance-barrels-1.jpg",
+  },
 ];
 
 export const MENU_HIGHLIGHTS = [
@@ -132,20 +240,23 @@ export const MENU_HIGHLIGHTS = [
   { name: "Fresh Fruit Platter", note: "Whatever's ripe on the island that day", price: "SCR 90" },
 ];
 
+/* ============================================================
+   Souvenir Shop — Moonlight Craft Curios
+   ============================================================ */
 export const SHOP_CATEGORIES = [
   {
     name: "Woven & Hand-Made Crafts",
     description: "Palm-leaf weaving, baskets and coconut-shell pieces made by local artisans.",
-    image: "https://sibert.sc/wp-content/uploads/2025/10/IMG-20250911-WA0084-scaled.jpg",
+    image: "/images/shop/shop-crafts-1.jpg",
   },
   {
     name: "Island Keepsakes",
-    description: "Postcards, carved wood pieces and small Creole artwork to remember La Digue by.",
-    image: "https://sibert.sc/wp-content/uploads/2025/10/IMG-20250911-WA0074-1024x768.jpg",
+    description: "Carved wood pieces, shell displays and small Creole artwork to remember La Digue by.",
+    image: "/images/shop/shop-crafts-2.jpg",
   },
   {
-    name: "Spices & Local Goods",
-    description: "Vanilla, cinnamon and island spice blends, along with locally made preserves.",
-    image: "https://sibert.sc/wp-content/uploads/2025/10/sibert-residence-c-8877.jpg",
+    name: "Jewellery & Accessories",
+    description: "Shell and bead jewellery, sun hats and bracelets handmade by local craftspeople.",
+    image: "/images/shop/shop-crafts-3.jpg",
   },
 ];
