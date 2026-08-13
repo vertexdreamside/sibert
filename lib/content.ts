@@ -3,6 +3,8 @@ export const SITE = {
   tagline: "La Digue · Seychelles",
   phone: "+248 423 4142",
   phoneHref: "tel:+2484234142",
+  whatsapp: "+248 423 4142",
+  whatsappHref: "https://wa.me/2484234142?text=Hi%20Sibert%20Residence%2C%20I%27d%20like%20to%20know%20more%20about%20a%20stay.",
   email: "sibertresidence@seychelles.net",
   address: "La Passe, La Digue, Seychelles",
   logoWhite:
@@ -10,11 +12,12 @@ export const SITE = {
   logoMark:
     "https://sibert.sc/wp-content/uploads/2020/11/cropped-Sibert-logo-scaled-1-270x270.png",
   social: {
-    facebook: "https://www.facebook.com/",
-    twitter: "https://www.twitter.com/",
-    vimeo: "https://www.vimeo.com/",
+    facebook: "https://www.facebook.com/share/1KKimtbTF",
+    instagram: "https://www.instagram.com/sibertresidence/",
   },
 };
+
+export type SiteInfo = typeof SITE;
 
 export type NavLink = {
   label: string;
@@ -36,6 +39,7 @@ export const NAV_LINKS: NavLink[] = [
       { label: "Bicycle Rental", href: "/services#bike" },
     ],
   },
+  { label: "FAQ", href: "/faq" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -46,6 +50,8 @@ export const EXTERIOR_IMAGES = {
   hero: "/images/exterior/building-2.jpg",
   about: "/images/exterior/building-1.jpg",
 };
+
+export type ExteriorImages = typeof EXTERIOR_IMAGES;
 
 /* ============================================================
    Rooms + 2026/2027 rate card
@@ -122,11 +128,63 @@ export const PRICING = {
   ],
   occupancy:
     "Superior Room: max 2 adults. Deluxe Room: max 2 adults + 1 child (6–11 yrs). Children under 6 stay free.",
+  prepayment: [
+    "Low & High Seasons: 50% deposit due 7 days prior to arrival — remaining 50% balance due on check-in.",
+    "Peak Season: 100% deposit due 21 days prior to arrival.",
+  ],
   cancellation: [
     "High & Low Seasons: free cancellation 8+ days before arrival · 0–7 days: 50% charge · no-show/early departure: 100% charge",
     "Peak Season: free cancellation 22+ days before arrival · 0–21 days: 100% charge · no-show/early departure: 100% charge",
   ],
 };
+
+export type Pricing = typeof PRICING;
+
+/* ============================================================
+   FAQ — check-in/out, opening hours, policies
+   ============================================================ */
+export const FAQ = {
+  checkIn: "14:00hrs",
+  checkOut: "12:00hrs",
+  checkInOutNote:
+    "Early check-in and late check-out can be guaranteed upon request, subject to availability. Contact the hotel reservations team for details.",
+  restaurantHours: [
+    { label: "Breakfast", time: "07:00hrs – 10:00hrs" },
+    { label: "Lunch / Dinner", time: "11:00hrs – 21:00hrs (last order)" },
+  ],
+  items: [
+    {
+      question: "What time is check-in and check-out?",
+      answer:
+        "Check-in is from 14:00hrs and check-out is by 12:00hrs. Early check-in and late check-out can be guaranteed upon request, subject to availability — contact the hotel reservations team for details.",
+    },
+    {
+      question: "What are the restaurant's opening hours?",
+      answer: "Breakfast: 07:00hrs – 10:00hrs. Lunch & Dinner: 11:00hrs – 21:00hrs (last order).",
+    },
+    {
+      question: "How much deposit do I need to pay to book?",
+      answer:
+        "For Low and High Season stays, a 50% deposit is due 7 days before arrival, with the remaining 50% balance paid on check-in. For Peak Season stays, a 100% deposit is due 21 days before arrival.",
+    },
+    {
+      question: "What is your cancellation policy?",
+      answer:
+        "In High and Low Seasons, cancellations are free 8 or more days before arrival; 0–7 days before arrival incurs a 50% charge, and no-shows or early departures are charged in full. In Peak Season, cancellations are free 22 or more days before arrival; inside that window, or for no-shows and early departures, the full amount is charged.",
+    },
+    {
+      question: "Do you offer half board?",
+      answer: "Yes — a Half Board Supplement of €30 per night per adult and €15 per night per child (6–11 yrs) can be added to a B&B booking.",
+    },
+    {
+      question: "Is there a discount for early bookings or long stays?",
+      answer:
+        "Yes — book 60 or more days ahead on a B&B basis (minimum 3 nights) for 10% off in Low Season or 5% off in High Season. Stays of 7 or more nights in High Season get 15% off on a B&B basis.",
+    },
+  ],
+};
+
+export type Faq = typeof FAQ;
 
 /* ============================================================
    Services
@@ -231,15 +289,6 @@ export const RESTAURANT_PHOTOS: RestaurantPhoto[] = [
   },
 ];
 
-export const MENU_HIGHLIGHTS = [
-  { name: "Grilled Reef Fish", note: "Line-caught fish, lime and island herbs", price: "Market Price" },
-  { name: "Coconut Fish Curry", note: "Slow-simmered in coconut milk and spice", price: "SCR 220" },
-  { name: "Octopus Salad", note: "Chilled, tossed with lime and chilli", price: "SCR 190" },
-  { name: "Seafood Stew", note: "Prawn, fish and calamari in Creole sauce", price: "SCR 240" },
-  { name: "Tropical Rum Cocktail", note: "Local rum, passionfruit, lime", price: "SCR 130" },
-  { name: "Fresh Fruit Platter", note: "Whatever's ripe on the island that day", price: "SCR 90" },
-];
-
 /* ============================================================
    Souvenir Shop — Moonlight Craft Curios
    ============================================================ */
@@ -260,3 +309,19 @@ export const SHOP_CATEGORIES = [
     image: "/images/shop/shop-crafts-3.jpg",
   },
 ];
+
+export type ShopCategory = (typeof SHOP_CATEGORIES)[number];
+
+/* ============================================================
+   Availability — dates blocked per room, managed from the admin
+   calendar. Empty by default (everything open) until an admin
+   marks dates as unavailable.
+   ============================================================ */
+export const AVAILABILITY: { blockedDates: Record<string, string[]> } = {
+  blockedDates: {
+    superior: [],
+    deluxe: [],
+  },
+};
+
+export type Availability = typeof AVAILABILITY;
