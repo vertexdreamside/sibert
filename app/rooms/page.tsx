@@ -4,7 +4,7 @@ import Boulder from "@/components/Boulder";
 import Reveal from "@/components/Reveal";
 import SectionHead from "@/components/SectionHead";
 import { BookingPanel } from "@/components/BookingForm";
-import { ROOMS } from "@/lib/content";
+import { EXTERIOR_IMAGES, PRICING, ROOMS } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Rooms",
@@ -18,8 +18,8 @@ export default function RoomsPage() {
         crumb="Home / Rooms"
         eyebrow="Where you'll sleep"
         title="Our Rooms"
-        lede="Six rooms across the guest house, each turned toward the garden or the sea — pick the one that fits how you like to travel."
-        image="https://sibert.sc/wp-content/uploads/2025/10/IMG-20250911-WA0165-scaled.jpg"
+        lede="Two room types, each turned toward the garden or the sea — pick the one that fits how you like to travel."
+        image={EXTERIOR_IMAGES.hero}
       />
 
       <section className="py-24">
@@ -39,8 +39,12 @@ export default function RoomsPage() {
                 <span className="font-script text-3xl text-gold-deep block leading-none mb-1">{room.name}</span>
                 <h2 className="font-display font-semibold text-3xl text-green-deep">{room.tagline}</h2>
                 <p className="text-ink-soft mt-4">{room.description}</p>
-                <p className="text-sm text-ink-soft mt-4">
-                  <strong className="text-ink">Bedding:</strong> {room.bedding}
+                <p className="font-display text-2xl text-gold-deep mt-4">
+                  from €{room.priceFrom} <span className="text-sm font-body text-ink-soft">/ night, B&amp;B, low season</span>
+                </p>
+                <p className="text-sm text-ink-soft mt-2">
+                  <strong className="text-ink">Bedding:</strong> {room.bedding} &nbsp;·&nbsp;{" "}
+                  <strong className="text-ink">Occupancy:</strong> {room.occupancy}
                 </p>
                 <ul className="flex flex-wrap gap-2.5 mt-4 mb-6">
                   {room.highlights.map((h) => (
@@ -77,6 +81,73 @@ export default function RoomsPage() {
               </Reveal>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="py-24 bg-green-deep text-sand">
+        <div className="max-w-[1180px] mx-auto px-8">
+          <Reveal>
+            <span className="font-script text-3xl text-gold block leading-none mb-1">2026 / 2027 Rates</span>
+            <h2 className="font-display font-semibold text-3xl text-sand">Room Rates by Season</h2>
+            <p className="text-granite-light mt-3 max-w-2xl">
+              Valid {PRICING.validity}. {PRICING.note}
+            </p>
+          </Reveal>
+
+          <Reveal delay={0.1}>
+            <div className="overflow-x-auto mt-8 rounded-2xl border border-white/15">
+              <table className="w-full text-left border-collapse min-w-[520px]">
+                <thead>
+                  <tr className="bg-white/5">
+                    <th className="py-4 px-5 font-display text-sand text-base font-medium">Room Type</th>
+                    <th className="py-4 px-5 font-display text-sand text-base font-medium">Low Season</th>
+                    <th className="py-4 px-5 font-display text-sand text-base font-medium">High Season</th>
+                    <th className="py-4 px-5 font-display text-sand text-base font-medium">Peak Season</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {PRICING.rates.map((r) => (
+                    <tr key={r.room} className="border-t border-white/10">
+                      <td className="py-4 px-5 text-sand font-medium">{r.room}</td>
+                      <td className="py-4 px-5 text-gold font-display text-lg">€{r.low}</td>
+                      <td className="py-4 px-5 text-gold font-display text-lg">€{r.high}</td>
+                      <td className="py-4 px-5 text-gold font-display text-lg">€{r.peak}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Reveal>
+
+          <Reveal delay={0.15}>
+            <div className="grid md:grid-cols-2 gap-8 mt-10">
+              <div>
+                <h3 className="font-display text-lg text-sand mb-3">Season Dates</h3>
+                <ul className="space-y-3 text-sm text-granite-light">
+                  {PRICING.seasons.map((s) => (
+                    <li key={s.name}>
+                      <strong className="text-gold">{s.name}:</strong> {s.dates}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <h3 className="font-display text-lg text-sand mb-3">Good to Know</h3>
+                <ul className="space-y-2.5 text-sm text-granite-light list-disc pl-4">
+                  {PRICING.extras.map((e) => (
+                    <li key={e}>{e}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </Reveal>
+
+          <Reveal delay={0.2}>
+            <p className="text-sm text-granite-light mt-8">{PRICING.occupancy}</p>
+            <p className="text-sm text-granite-light mt-2">
+              Cancellation: {PRICING.cancellation.join(" · ")}
+            </p>
+          </Reveal>
         </div>
       </section>
 

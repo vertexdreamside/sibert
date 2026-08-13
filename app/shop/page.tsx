@@ -21,14 +21,14 @@ export default function ShopPage() {
         eyebrow="Moonlight Craft Curios"
         title="Souvenir Shop"
         lede="Take a piece of La Digue home — hand-made crafts, island keepsakes and gifts, right on the property."
-        image="https://sibert.sc/wp-content/uploads/2025/10/IMG-20250911-WA0084-scaled.jpg"
+        image="/images/shop/shop-crafts-1.jpg"
       />
 
       <section className="py-24">
         <div className="max-w-[1180px] mx-auto px-8 grid md:grid-cols-2 gap-16 items-center">
           <Reveal>
             <Boulder
-              src="https://sibert.sc/wp-content/uploads/2025/10/IMG-20250911-WA0074-1024x768.jpg"
+              src="/images/shop/shop-crafts-2.jpg"
               alt="Moonlight Craft Curios souvenir shop at Sibert Residence"
               aspect="aspect-[4/4.6]"
             />

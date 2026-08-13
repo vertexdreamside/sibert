@@ -4,7 +4,7 @@ import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
 import ContactForm from "@/components/ContactForm";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
-import { SITE } from "@/lib/content";
+import { EXTERIOR_IMAGES, SITE } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -19,7 +19,7 @@ export default function ContactPage() {
         eyebrow="We'd love to hear from you"
         title="Contact Us"
         lede="Questions about a room, a table, or an excursion? Reach out and our team will get back to you."
-        image="https://sibert.sc/wp-content/uploads/2025/10/sibert-residence-b-8899.jpg"
+        image={EXTERIOR_IMAGES.about}
       />
 
       <section className="py-24">

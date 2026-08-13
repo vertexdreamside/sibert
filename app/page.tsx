@@ -6,7 +6,7 @@ import SectionHead from "@/components/SectionHead";
 import FrondDivider from "@/components/FrondDivider";
 import RoomCard from "@/components/RoomCard";
 import { BookingWidgetCompact } from "@/components/BookingForm";
-import { GALLERY_IMAGES, ROOMS } from "@/lib/content";
+import { EXTERIOR_IMAGES, GALLERY_IMAGES, ROOMS } from "@/lib/content";
 
 export default function HomePage() {
   return (
@@ -15,7 +15,7 @@ export default function HomePage() {
       <section className="relative min-h-screen flex items-end pt-40 overflow-hidden">
         <div className="absolute inset-0 scale-105">
           <Image
-            src="https://sibert.sc/wp-content/uploads/2025/10/IMG-20250911-WA0060-scaled.jpg"
+            src={EXTERIOR_IMAGES.hero}
             alt="Sibert Residence, La Digue"
             fill
             priority
@@ -62,7 +62,7 @@ export default function HomePage() {
         <div className="max-w-[1180px] mx-auto px-8 grid md:grid-cols-2 gap-16 items-center">
           <Reveal>
             <Boulder
-              src="https://sibert.sc/wp-content/uploads/2025/10/sibert-residence-b-8896.jpg"
+              src={EXTERIOR_IMAGES.about}
               alt="Sibert Residence guest house exterior on La Digue"
               aspect="aspect-[4/4.6]"
             />

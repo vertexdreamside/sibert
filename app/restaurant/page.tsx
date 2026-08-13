@@ -1,36 +1,16 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import PageHero from "@/components/PageHero";
 import Boulder from "@/components/Boulder";
 import Reveal from "@/components/Reveal";
 import SectionHead from "@/components/SectionHead";
-import { MENU_HIGHLIGHTS } from "@/lib/content";
+import { MENU_HIGHLIGHTS, RESTAURANT_PHOTOS } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Restaurant & Bar",
   description:
     "Nature's Choice A'LaKart Restaurant & Bar at Sibert Residence — authentic Creole dishes and tropical cocktails on La Digue, Seychelles.",
 };
-
-const blocks = [
-  {
-    eyebrow: "Our Creole Dishes",
-    title: "A true taste of La Digue",
-    body: "Grilled catch of the day, coconut curries and slow-cooked seafood stews, made with fresh local ingredients and served the way Creole families have cooked them for generations. Breakfast leans continental — fruit, juice, and island staples — while lunch and dinner bring out the full à la carte menu.",
-    image: "https://sibert.sc/wp-content/uploads/2025/10/IMG-20250911-WA0037-scaled.jpg",
-  },
-  {
-    eyebrow: "Our Cocktail Bar",
-    title: "Tropical cocktails, easygoing evenings",
-    body: "Sip cocktails made with local fruit at the bar, or unwind with a cold Seybrew as the sun drops behind the granite hills. It's the natural spot to end a day of diving, cycling or boat excursions — whether you're staying with us or just passing through.",
-    image: "https://sibert.sc/wp-content/uploads/2025/10/IMG-20250911-WA0047-scaled.jpg",
-  },
-  {
-    eyebrow: "The Terrace",
-    title: "Dinner with an island soundtrack",
-    body: "Our open-air terrace looks out toward the garden and the sea breeze — the kind of spot where dinner runs long and nobody minds. Packed lunches are available too, for guests heading out on excursions or exploring the island for the day.",
-    image: "https://sibert.sc/wp-content/uploads/2025/10/IMG-20250911-WA0060-scaled.jpg",
-  },
-];
 
 export default function RestaurantPage() {
   return (
@@ -40,28 +20,40 @@ export default function RestaurantPage() {
         eyebrow="Nature's Choice A'LaKart"
         title="Restaurant & Bar"
         lede="Creole flavours cooked with island ingredients, and a bar built for slow evenings — open to guests and visitors alike."
-        image="https://sibert.sc/wp-content/uploads/2025/10/IMG-20250911-WA0037-scaled.jpg"
+        image={RESTAURANT_PHOTOS[0].image}
       />
 
       <section className="py-24">
         <div className="max-w-[1180px] mx-auto px-8">
-          {blocks.map((b, i) => (
-            <div
-              key={b.title}
-              className={`grid md:grid-cols-2 gap-14 items-center py-16 ${
-                i !== blocks.length - 1 ? "border-b border-granite-light" : ""
-              }`}
-            >
-              <Reveal className={i % 2 === 1 ? "md:order-2" : ""}>
-                <Boulder src={b.image} alt={b.title} variant={((i % 3) + 1) as 1 | 2 | 3} aspect="aspect-[6/5]" />
+          <Reveal>
+            <SectionHead
+              center
+              eyebrow="Take a look inside"
+              title="Our Restaurant & Bar"
+              description="A few corners of the space, exactly as they are today."
+            />
+          </Reveal>
+          <div className="grid md:grid-cols-3 gap-8">
+            {RESTAURANT_PHOTOS.map((p, i) => (
+              <Reveal key={p.title} delay={(i % 3) * 0.08}>
+                <article className="bg-white rounded-[26px] overflow-hidden shadow-soft h-full flex flex-col">
+                  <div className="relative aspect-[4/3] overflow-hidden">
+                    <Image
+                      src={p.image}
+                      alt={p.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                      className="object-cover"
+                    />
+                  </div>
+                  <div className="p-6">
+                    <h3 className="font-display text-lg text-green-deep">{p.title}</h3>
+                    <p className="text-ink-soft text-sm mt-2">{p.description}</p>
+                  </div>
+                </article>
               </Reveal>
-              <Reveal delay={0.1}>
-                <span className="font-script text-3xl text-gold-deep block leading-none mb-1">{b.eyebrow}</span>
-                <h2 className="font-display font-semibold text-3xl text-green-deep">{b.title}</h2>
-                <p className="text-ink-soft mt-4">{b.body}</p>
-              </Reveal>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
@@ -117,8 +109,8 @@ export default function RestaurantPage() {
           </Reveal>
           <Reveal delay={0.1}>
             <Boulder
-              src="https://sibert.sc/wp-content/uploads/2025/10/IMG-20250911-WA0165-scaled.jpg"
-              alt="Evening at Sibert Residence"
+              src="/images/restaurant/entrance-barrels-3.jpg"
+              alt="Sibert Residence Restaurant & Bar entrance"
               variant={2}
               aspect="aspect-[4/4.6]"
             />
