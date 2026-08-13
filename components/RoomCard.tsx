@@ -9,6 +9,9 @@ export default function RoomCard({ room }: { room: Room }) {
         <span className="absolute top-4 left-4 z-[1] bg-green-deep/85 text-gold text-xs tracking-wide uppercase px-3 py-1.5 rounded-full">
           {room.name}
         </span>
+        <span className="absolute top-4 right-4 z-[1] bg-gold text-green-deep text-xs font-semibold px-3 py-1.5 rounded-full">
+          from €{room.priceFrom}/night
+        </span>
         <Image
           src={room.image}
           alt={room.name}
@@ -35,7 +38,7 @@ export default function RoomCard({ room }: { room: Room }) {
           href={`/rooms#${room.slug}`}
           className="mt-4 font-semibold text-green-deep text-sm inline-flex items-center gap-1.5 group/link"
         >
-          View room <span className="transition-transform group-hover/link:translate-x-1">→</span>
+          View room &amp; rates <span className="transition-transform group-hover/link:translate-x-1">→</span>
         </Link>
       </div>
     </article>
