@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import { Fraunces, Work_Sans, Yesteryear } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import Loader from "@/components/Loader";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -39,12 +36,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${fraunces.variable} ${workSans.variable} ${yesteryear.variable}`}>
-      <body className="font-body antialiased">
-        <Loader />
-        <Header />
-        {children}
-        <Footer />
-      </body>
+      <body className="font-body antialiased">{children}</body>
     </html>
   );
 }
