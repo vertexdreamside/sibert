@@ -12,6 +12,7 @@ export default function Footer({ site }: { site: SiteInfo }) {
             <div className="relative h-12 w-32 mb-3">
               <Image src={site.logoWhite} alt="Sibert Residence logo" fill className="object-contain object-left" />
             </div>
+            <p className="font-display italic text-sand/90 text-sm mb-2">{site.slogan}</p>
             <p className="text-sm">
               A family-run guest house in La Passe, La Digue — relaxed rooms, Creole dining and island adventures.
             </p>
@@ -46,7 +47,16 @@ export default function Footer({ site }: { site: SiteInfo }) {
           <div>
             <h4 className="text-sand text-sm tracking-wide uppercase mb-4">Contact</h4>
             <ul className="space-y-2.5 text-sm">
-              <li>{site.address}</li>
+              <li>
+                <a
+                  href={site.mapsHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-gold"
+                >
+                  {site.address}
+                </a>
+              </li>
               <li><a href={site.phoneHref} className="hover:text-gold">{site.phone}</a></li>
               {site.whatsappHref && (
                 <li>

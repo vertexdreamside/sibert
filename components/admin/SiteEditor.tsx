@@ -37,7 +37,21 @@ export default function SiteEditor({ initial }: { initial: SiteInfo }) {
 
       <div className="bg-white rounded-xl border border-[#EDE3CE] p-5 sm:p-6 space-y-5">
         <TextField label="Property Name" value={site.name} onChange={(v) => set("name", v)} />
-        <TextField label="Tagline" value={site.tagline} onChange={(v) => set("tagline", v)} />
+        <TextField label="Tagline (short, under name in header)" value={site.tagline} onChange={(v) => set("tagline", v)} />
+        <div className="grid sm:grid-cols-2 gap-5">
+          <TextField
+            label="Loader Eyebrow"
+            value={site.sloganEyebrow}
+            onChange={(v) => set("sloganEyebrow", v)}
+            placeholder="Welcome to Paradise"
+          />
+          <TextField
+            label="Slogan (loader + footer)"
+            value={site.slogan}
+            onChange={(v) => set("slogan", v)}
+            placeholder="Your Serene Hideaway in La Digue"
+          />
+        </div>
         <TextField label="Address" value={site.address} onChange={(v) => set("address", v)} />
 
         <div className="grid sm:grid-cols-2 gap-5">

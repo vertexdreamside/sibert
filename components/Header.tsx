@@ -65,7 +65,7 @@ export default function Header({ site }: { site: SiteInfo }) {
           href="/rooms#booking"
           className="inline-flex items-center gap-2 bg-gold text-green-deep font-semibold text-sm px-5 py-3 rounded-full shadow-[0_10px_24px_-10px_rgba(227,168,87,0.7)] hover:bg-white transition-all hover:-translate-y-0.5"
         >
-          Book Now
+          Book Your Stay
         </Link>
       </header>
 
@@ -152,7 +152,14 @@ export default function Header({ site }: { site: SiteInfo }) {
               </ul>
 
               <div className="mt-9 pt-6 border-t border-white/10 text-granite-light text-sm space-y-2">
-                <p>{site.address}</p>
+                <a
+                  href={site.mapsHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block hover:text-gold"
+                >
+                  {site.address}
+                </a>
                 <a href={site.phoneHref} className="block text-sand hover:text-gold">
                   {site.phone}
                 </a>
