@@ -8,7 +8,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
   const site = await getSite();
   return (
     <>
-      <Loader />
+      <Loader site={site} />
       <Header site={site} />
       {children}
       <Footer site={site} />

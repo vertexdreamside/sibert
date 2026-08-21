@@ -1,4 +1,7 @@
-import ComingSoon from "@/components/admin/ComingSoon";
-export default function Page() {
-  return <ComingSoon title="Pricing" note="Seasonal rates, season dates, prepayment, extras and cancellation terms." />;
+import { getPricing } from "@/lib/cms";
+import PricingEditor from "@/components/admin/PricingEditor";
+
+export default async function AdminPricingPage() {
+  const pricing = await getPricing();
+  return <PricingEditor initial={pricing} />;
 }

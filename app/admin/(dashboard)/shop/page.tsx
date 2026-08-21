@@ -1,4 +1,7 @@
-import ComingSoon from "@/components/admin/ComingSoon";
-export default function Page() {
-  return <ComingSoon title="Souvenir Shop" note="Shop category names, descriptions and photos." />;
+import { getShopCategories } from "@/lib/cms";
+import ShopEditor from "@/components/admin/ShopEditor";
+
+export default async function AdminShopPage() {
+  const categories = await getShopCategories();
+  return <ShopEditor initial={categories} />;
 }

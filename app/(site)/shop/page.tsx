@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import Image from "next/image";
 import PageHero from "@/components/PageHero";
 import Boulder from "@/components/Boulder";
 import Reveal from "@/components/Reveal";
 import SectionHead from "@/components/SectionHead";
-import { getShopCategories } from "@/lib/cms";
+import { getShopCategories, getSite } from "@/lib/cms";
 
 export const metadata: Metadata = {
   title: "Souvenir Shop",
@@ -14,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ShopPage() {
-  const shopCategories = await getShopCategories();
+  const [shopCategories, site] = await Promise.all([getShopCategories(), getSite()]);
 
   return (
     <>
@@ -23,7 +22,7 @@ export default async function ShopPage() {
         eyebrow="Moonlight Craft Curios"
         title="Souvenir Shop"
         lede="Take a piece of La Digue home — hand-made crafts, island keepsakes and gifts, right on the property."
-        image="/images/shop/shop-crafts-1.jpg"
+        image="/images/shop/moonlight-sign.jpg"
       />
 
       <section className="py-24">
@@ -85,9 +84,9 @@ export default async function ShopPage() {
               Moonlight Craft Curios is open daily at the guest house — no need to book, just drop in on your way
               to or from the beach.
             </p>
-            <Link href="/contact" className="btn-primary">
+            <a href={site.mapsHref} target="_blank" rel="noopener noreferrer" className="btn-primary">
               Get Directions
-            </Link>
+            </a>
           </Reveal>
         </div>
       </section>

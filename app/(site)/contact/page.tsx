@@ -32,7 +32,13 @@ export default async function ContactPage() {
             <h2 className="font-display font-semibold text-3xl text-green-deep">La Passe, La Digue</h2>
             <ul className="mt-6 space-y-5">
               {[
-                { icon: MapPin, label: "Address", value: `${site.address} — about a 5-minute ride from the jetty` },
+                {
+                  icon: MapPin,
+                  label: "Address",
+                  value: `${site.address} — about a 5-minute ride from the jetty`,
+                  href: site.mapsHref,
+                  newTab: true,
+                },
                 { icon: Phone, label: "Phone", value: site.phone, href: site.phoneHref },
                 { icon: WhatsAppIcon, label: "WhatsApp", value: site.whatsapp, href: site.whatsappHref, newTab: true },
                 { icon: Mail, label: "Email", value: site.email, href: `mailto:${site.email}` },
@@ -63,7 +69,7 @@ export default async function ContactPage() {
             <iframe
               loading="lazy"
               className="w-full h-[340px] rounded-[26px] shadow-soft border-0 mt-8 grayscale-[15%] saturate-[1.1]"
-              src="https://maps.google.com/maps?q=La%20Passe%2C%20La%20Digue%2C%20Seychelles&t=&z=15&ie=UTF8&iwloc=&output=embed"
+              src={site.mapsEmbedSrc}
               title="Map to Sibert Residence, La Digue"
             />
           </Reveal>

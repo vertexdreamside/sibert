@@ -1,4 +1,7 @@
-import ComingSoon from "@/components/admin/ComingSoon";
-export default function Page() {
-  return <ComingSoon title="Rooms" note="Room name, tagline, description, bedding, occupancy, highlights, image and price." />;
+import { getRooms } from "@/lib/cms";
+import RoomsEditor from "@/components/admin/RoomsEditor";
+
+export default async function AdminRoomsPage() {
+  const rooms = await getRooms();
+  return <RoomsEditor initial={rooms} />;
 }

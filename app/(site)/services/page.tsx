@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import PageHero from "@/components/PageHero";
 import Boulder from "@/components/Boulder";
 import Reveal from "@/components/Reveal";
-import { getServices } from "@/lib/cms";
+import { getServices, getSite } from "@/lib/cms";
+import { whatsAppLink } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Services",
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ServicesPage() {
-  const services = await getServices();
+  const [services, site] = await Promise.all([getServices(), getSite()]);
 
   return (
     <>
@@ -47,9 +47,14 @@ export default async function ServicesPage() {
                     </li>
                   ))}
                 </ul>
-                <Link href="/contact" className="btn-primary bg-green-deep text-sand">
+                <a
+                  href={whatsAppLink(site, `Hello, I would like to enquire about the ${s.name} at Sibert Residence.`)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-primary bg-green-deep text-sand"
+                >
                   Enquire About This Trip
-                </Link>
+                </a>
               </Reveal>
             </article>
           ))}
@@ -67,9 +72,14 @@ export default async function ServicesPage() {
               Tell us how many days you have and what you&apos;d like to see, and we&apos;ll put together a mix of
               excursions that fits your stay.
             </p>
-            <Link href="/contact" className="btn-primary">
-              Contact Us
-            </Link>
+            <a
+              href={whatsAppLink(site, "Hello, I would like some assistance planning my stay at Sibert Residence.")}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-primary"
+            >
+              Open WhatsApp
+            </a>
           </Reveal>
         </div>
       </section>

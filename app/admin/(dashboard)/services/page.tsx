@@ -1,4 +1,7 @@
-import ComingSoon from "@/components/admin/ComingSoon";
-export default function Page() {
-  return <ComingSoon title="Services" note="Boat excursion, buggy tour and bike rental details." />;
+import { getServices } from "@/lib/cms";
+import ServicesEditor from "@/components/admin/ServicesEditor";
+
+export default async function AdminServicesPage() {
+  const services = await getServices();
+  return <ServicesEditor initial={services} />;
 }

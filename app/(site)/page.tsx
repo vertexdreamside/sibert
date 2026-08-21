@@ -1,36 +1,29 @@
-import Image from "next/image";
 import Link from "next/link";
 import Reveal from "@/components/Reveal";
 import Boulder from "@/components/Boulder";
 import SectionHead from "@/components/SectionHead";
 import FrondDivider from "@/components/FrondDivider";
 import RoomCard from "@/components/RoomCard";
+import HeroCarousel from "@/components/HeroCarousel";
 import { BookingWidgetCompact } from "@/components/BookingForm";
-import { getExteriorImages, getGalleryImages, getRooms, getAvailability } from "@/lib/cms";
+import { getExteriorImages, getGalleryImages, getRooms, getAvailability, getPricing, getSite } from "@/lib/cms";
 
 export default async function HomePage() {
-  const [exteriorImages, galleryImages, rooms, availability] = await Promise.all([
+  const [exteriorImages, galleryImages, rooms, availability, pricing, site] = await Promise.all([
     getExteriorImages(),
     getGalleryImages(),
     getRooms(),
     getAvailability(),
+    getPricing(),
+    getSite(),
   ]);
 
   return (
     <>
       {/* ===== Hero ===== */}
-      <section className="relative min-h-screen flex items-end pt-40 overflow-hidden">
-        <div className="absolute inset-0 scale-105">
-          <Image
-            src={exteriorImages.hero}
-            alt="Sibert Residence, La Digue"
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#0a231a]/35 via-[#0a231a]/25 to-[#091a13]/92" />
-        </div>
+      <section className="relative min-h-screen flex items-end pt-40 pb-36 sm:pb-40 overflow-hidden">
+        <HeroCarousel images={exteriorImages.heroSlides} alt="Sibert Residence, La Digue" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0a231a]/35 via-[#0a231a]/25 to-[#091a13]/92 z-[1]" />
         <div className="relative z-[2] max-w-[1180px] mx-auto px-5 sm:px-8 pb-24 w-full">
           <span className="font-script text-3xl md:text-4xl text-gold block leading-none mb-1">
             Bonzour &amp; welcome
@@ -41,17 +34,18 @@ export default async function HomePage() {
           >
             A cosy island home, five minutes from the jetty
           </h1>
-          <p className="text-sand/90 max-w-[44ch] mt-5 text-lg">
+          <p className="font-display italic text-gold text-lg md:text-xl mt-3">{site.slogan}</p>
+          <p className="text-sand/90 max-w-[44ch] mt-4 text-lg">
             Sibert Residence is a family-run guest house on La Passe beach, La Digue — relaxed rooms, Creole
             cooking, a cocktail bar and easy access to the island&apos;s beaches, boulders and back roads.
           </p>
           <div className="flex flex-wrap gap-4 mt-7">
-            <a href="#booking" className="btn-primary">
-              Book Your Stay
-            </a>
-            <Link href="/rooms" className="btn-ghost">
-              Explore Rooms
+            <Link href="/rooms#booking" className="btn-primary">
+              Book Your Room
             </Link>
+            <a href="#booking" className="btn-ghost">
+              Check Availability
+            </a>
           </div>
         </div>
         <span className="hidden md:flex absolute right-10 bottom-9 z-[2] text-sand items-center gap-2.5 text-xs tracking-[0.3em] uppercase opacity-85 [writing-mode:vertical-rl]">
@@ -61,7 +55,7 @@ export default async function HomePage() {
 
       {/* ===== Booking widget ===== */}
       <div className="max-w-[1180px] mx-auto px-5 sm:px-8">
-        <BookingWidgetCompact availability={availability} />
+        <BookingWidgetCompact availability={availability} pricing={pricing} site={site} />
       </div>
 
       {/* ===== About ===== */}
@@ -69,7 +63,7 @@ export default async function HomePage() {
         <div className="max-w-[1180px] mx-auto px-5 sm:px-8 grid md:grid-cols-2 gap-16 items-center">
           <Reveal>
             <Boulder
-              src={exteriorImages.about}
+              src={exteriorImages.story}
               alt="Sibert Residence guest house exterior on La Digue"
               aspect="aspect-[4/4.6]"
             />
@@ -93,7 +87,7 @@ export default async function HomePage() {
             <div className="flex gap-8 mt-8 flex-wrap">
               {[
                 ["20+", "Years of hospitality"],
-                ["6", "Guest rooms"],
+                ["10", "Rooms"],
                 ["5 min", "Ride from the jetty"],
               ].map(([n, label]) => (
                 <div key={label} className="border-l-2 border-gold pl-3.5">
@@ -114,12 +108,12 @@ export default async function HomePage() {
               center
               eyebrow="Where you'll sleep"
               title="Discover Our Rooms"
-              description="Six rooms, each with its own character — from sunlit balconies to extra space for families. All are just steps from the restaurant, the bar, and the beach path."
+              description="Ten rooms across two styles — from sunlit balconies to extra space for families. All are just steps from the restaurant, the bar, and the beach path."
             />
           </Reveal>
-          <div className="grid md:grid-cols-2 gap-10">
+          <div className="grid md:grid-cols-2 gap-10 items-stretch">
             {rooms.map((room, i) => (
-              <Reveal key={room.slug} delay={i * 0.1}>
+              <Reveal key={room.slug} delay={i * 0.1} className="h-full">
                 <RoomCard room={room} />
               </Reveal>
             ))}
@@ -233,7 +227,7 @@ export default async function HomePage() {
           </Reveal>
           <Reveal delay={0.1}>
             <Boulder
-              src="https://sibert.sc/wp-content/uploads/2025/10/sibert-residence-c-2-6.jpg"
+              src={exteriorImages.cta}
               alt="La Digue island scenery"
               variant={2}
               aspect="aspect-[4/4.6]"

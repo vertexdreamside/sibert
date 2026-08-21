@@ -1,4 +1,7 @@
-import ComingSoon from "@/components/admin/ComingSoon";
-export default function Page() {
-  return <ComingSoon title="FAQ" note="Check-in/out times, restaurant hours and the question list." />;
+import { getFaq } from "@/lib/cms";
+import FaqEditor from "@/components/admin/FaqEditor";
+
+export default async function AdminFaqPage() {
+  const faq = await getFaq();
+  return <FaqEditor initial={faq} />;
 }

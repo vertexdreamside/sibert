@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import PageHero from "@/components/PageHero";
 import Boulder from "@/components/Boulder";
 import Reveal from "@/components/Reveal";
 import SectionHead from "@/components/SectionHead";
 import { BookingPanel } from "@/components/BookingForm";
-import { getExteriorImages, getPricing, getRooms, getAvailability } from "@/lib/cms";
+import { getExteriorImages, getPricing, getRooms, getAvailability, getSite } from "@/lib/cms";
 
 export const metadata: Metadata = {
   title: "Rooms",
@@ -12,11 +13,12 @@ export const metadata: Metadata = {
 };
 
 export default async function RoomsPage() {
-  const [exteriorImages, pricing, rooms, availability] = await Promise.all([
+  const [exteriorImages, pricing, rooms, availability, site] = await Promise.all([
     getExteriorImages(),
     getPricing(),
     getRooms(),
     getAvailability(),
+    getSite(),
   ]);
 
   return (
@@ -46,10 +48,7 @@ export default async function RoomsPage() {
                 <span className="font-script text-3xl text-gold-deep block leading-none mb-1">{room.name}</span>
                 <h2 className="font-display font-semibold text-3xl text-green-deep">{room.tagline}</h2>
                 <p className="text-ink-soft mt-4">{room.description}</p>
-                <p className="font-display text-2xl text-gold-deep mt-4">
-                  from €{room.priceFrom} <span className="text-sm font-body text-ink-soft">/ night, B&amp;B, low season</span>
-                </p>
-                <p className="text-sm text-ink-soft mt-2">
+                <p className="text-sm text-ink-soft mt-4">
                   <strong className="text-ink">Bedding:</strong> {room.bedding} &nbsp;·&nbsp;{" "}
                   <strong className="text-ink">Occupancy:</strong> {room.occupancy}
                 </p>
@@ -61,7 +60,7 @@ export default async function RoomsPage() {
                   ))}
                 </ul>
                 <a href="#booking" className="btn-primary bg-green-deep text-sand">
-                  Check Availability
+                  See Rates &amp; Book
                 </a>
               </Reveal>
             </article>
@@ -94,74 +93,23 @@ export default async function RoomsPage() {
       <section className="py-24 bg-green-deep text-sand">
         <div className="max-w-[1180px] mx-auto px-5 sm:px-8">
           <Reveal>
-            <span className="font-script text-3xl text-gold block leading-none mb-1">2026 / 2027 Rates</span>
-            <h2 className="font-display font-semibold text-3xl text-sand">Room Rates by Season</h2>
+            <span className="font-script text-3xl text-gold block leading-none mb-1">When to visit</span>
+            <h2 className="font-display font-semibold text-3xl text-sand">Season Dates</h2>
             <p className="text-granite-light mt-3 max-w-2xl">
-              Valid {pricing.validity}. {pricing.note}
+              Rates vary by season and are shown automatically once you select your dates below — along with any
+              offers and the full terms &amp; conditions for that stay.
             </p>
           </Reveal>
 
           <Reveal delay={0.1}>
-            <div className="overflow-x-auto mt-8 rounded-2xl border border-white/15">
-              <table className="w-full text-left border-collapse min-w-[520px]">
-                <thead>
-                  <tr className="bg-white/5">
-                    <th className="py-4 px-5 font-display text-sand text-base font-medium">Room Type</th>
-                    <th className="py-4 px-5 font-display text-sand text-base font-medium">Low Season</th>
-                    <th className="py-4 px-5 font-display text-sand text-base font-medium">High Season</th>
-                    <th className="py-4 px-5 font-display text-sand text-base font-medium">Peak Season</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {pricing.rates.map((r) => (
-                    <tr key={r.room} className="border-t border-white/10">
-                      <td className="py-4 px-5 text-sand font-medium">{r.room}</td>
-                      <td className="py-4 px-5 text-gold font-display text-lg">€{r.low}</td>
-                      <td className="py-4 px-5 text-gold font-display text-lg">€{r.high}</td>
-                      <td className="py-4 px-5 text-gold font-display text-lg">€{r.peak}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="grid sm:grid-cols-3 gap-6 mt-8">
+              {pricing.seasons.map((s) => (
+                <div key={s.name} className="rounded-2xl border border-white/15 p-6">
+                  <h3 className="font-display text-lg text-gold">{s.name}</h3>
+                  <p className="text-granite-light text-sm mt-2">{s.dates}</p>
+                </div>
+              ))}
             </div>
-          </Reveal>
-
-          <Reveal delay={0.15}>
-            <div className="grid md:grid-cols-3 gap-8 mt-10">
-              <div>
-                <h3 className="font-display text-lg text-sand mb-3">Season Dates</h3>
-                <ul className="space-y-3 text-sm text-granite-light">
-                  {pricing.seasons.map((s) => (
-                    <li key={s.name}>
-                      <strong className="text-gold">{s.name}:</strong> {s.dates}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <h3 className="font-display text-lg text-sand mb-3">Prepayment</h3>
-                <ul className="space-y-2.5 text-sm text-granite-light list-disc pl-4">
-                  {pricing.prepayment.map((p) => (
-                    <li key={p}>{p}</li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <h3 className="font-display text-lg text-sand mb-3">Good to Know</h3>
-                <ul className="space-y-2.5 text-sm text-granite-light list-disc pl-4">
-                  {pricing.extras.map((e) => (
-                    <li key={e}>{e}</li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </Reveal>
-
-          <Reveal delay={0.2}>
-            <p className="text-sm text-granite-light mt-8">{pricing.occupancy}</p>
-            <p className="text-sm text-granite-light mt-2">
-              Cancellation: {pricing.cancellation.join(" · ")}
-            </p>
           </Reveal>
         </div>
       </section>
@@ -173,12 +121,14 @@ export default async function RoomsPage() {
               center
               eyebrow="Reserve your room"
               title="Book Your Stay"
-              description="Choose your dates and room type below. Payments are processed securely."
+              description="Select your dates and room below to see your rate, any offers you qualify for, and our booking terms."
             />
           </Reveal>
-          <Reveal delay={0.1}>
-            <BookingPanel rooms={rooms} availability={availability} />
-          </Reveal>
+          <Suspense fallback={null}>
+            <Reveal delay={0.1}>
+              <BookingPanel rooms={rooms} availability={availability} pricing={pricing} site={site} />
+            </Reveal>
+          </Suspense>
         </div>
       </section>
     </>
