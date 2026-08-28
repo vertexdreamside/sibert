@@ -84,6 +84,7 @@ export type Room = {
   description: string;
   bedding: string;
   occupancy: string;
+  guestOptions: string[];
   highlights: string[];
   image: string;
   priceFrom: number;
@@ -98,6 +99,7 @@ export const ROOMS: Room[] = [
       "A sunlit retreat featuring a king size bed, coastal teal decor, and a private balcony with lush tropical views. Designed with cosy armchair seating and warm wooden finishes, it's the ideal space for couples or solo travellers to unwind after a day on the island.",
     bedding: "1 King Size Bed",
     occupancy: "Max 2 Adults, or 1 Adult + 1 Child (6–11 yrs)",
+    guestOptions: ["2 Adults", "1 Adult + 1 Child (6–11 yrs)"],
     highlights: ["Private balcony", "Plush seating area", "Airy tile flooring"],
     image: "/images/rooms/superior.png",
     priceFrom: 186,
@@ -110,6 +112,7 @@ export const ROOMS: Room[] = [
       "Generously spaced to host couples or small families, the Deluxe Room features a main plush bed plus an extra single daybed. Comes fully appointed with a private ensuite bathroom, a full wooden wardrobe, and a dedicated vanity desk.",
     bedding: "1 King Bed + 1 Single Bed",
     occupancy: "Max 2 Adults + 1 Child (6–11 yrs), or 1 Adult + 2 Children (6–11 yrs)",
+    guestOptions: ["2 Adults + 1 Child (6–11 yrs)", "1 Adult + 2 Children (6–11 yrs)"],
     highlights: ["Extra spacious layout", "Private ensuite bathroom", "Generous storage space"],
     image: "/images/rooms/deluxe.png",
     priceFrom: 201,

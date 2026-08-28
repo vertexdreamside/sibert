@@ -15,6 +15,7 @@ function blankRoom(): Room {
     description: "",
     bedding: "",
     occupancy: "",
+    guestOptions: [],
     highlights: [],
     image: "",
     priceFrom: 0,
@@ -107,8 +108,15 @@ export default function RoomsEditor({ initial }: { initial: Room[] }) {
 
             <div className="grid sm:grid-cols-2 gap-4">
               <TextField label="Bedding" value={room.bedding} onChange={(v) => update(i, "bedding", v)} />
-              <TextField label="Occupancy" value={room.occupancy} onChange={(v) => update(i, "occupancy", v)} />
+              <TextField label="Occupancy (shown as text)" value={room.occupancy} onChange={(v) => update(i, "occupancy", v)} />
             </div>
+
+            <StringListEditor
+              label="Guest Options (booking form dropdown)"
+              items={room.guestOptions}
+              onChange={(v) => update(i, "guestOptions", v)}
+              placeholder="e.g. 2 Adults + 1 Child (6–11 yrs)"
+            />
 
             <StringListEditor
               label="Highlights"

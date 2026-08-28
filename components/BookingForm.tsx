@@ -199,6 +199,7 @@ export function BookingPanel({
     handleSubmit,
     watch,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<PanelValues>({
     resolver: zodResolver(panelSchema),
@@ -206,7 +207,7 @@ export function BookingPanel({
       arrival: "",
       departure: "",
       room: rooms[0]?.slug ?? "",
-      guests: "2 Adults",
+      guests: rooms[0]?.guestOptions[0] ?? "2 Adults",
       name: "",
       email: "",
     },
@@ -226,8 +227,19 @@ export function BookingPanel({
   const arrival = watch("arrival");
   const departure = watch("departure");
   const roomSlug = watch("room");
-  const roomName = rooms.find((r) => r.slug === roomSlug)?.name;
+  const guests = watch("guests");
+  const room = rooms.find((r) => r.slug === roomSlug);
+  const roomName = room?.name;
+  const guestOptions = room?.guestOptions ?? [];
   const blocked = useMemo(() => availability.blockedDates[roomSlug] ?? [], [availability, roomSlug]);
+
+  // Keep the selected Guests value valid for whichever room is currently chosen.
+  useEffect(() => {
+    if (guestOptions.length > 0 && !guestOptions.includes(guests)) {
+      setValue("guests", guestOptions[0]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [roomSlug]);
 
   const stay = useMemo(() => {
     if (!arrival || !departure) return null;
@@ -270,17 +282,16 @@ export function BookingPanel({
           <select {...register("room")} className="field-input">
             {rooms.map((r) => (
               <option key={r.slug} value={r.slug}>
-                {r.name} — {r.bedding}
+                {r.name}
               </option>
             ))}
           </select>
         </Field>
         <Field label="Guests">
           <select {...register("guests")} className="field-input">
-            <option>1 Adult</option>
-            <option>2 Adults</option>
-            <option>2 Adults, 1 Child</option>
-            <option>2 Adults, 2 Children</option>
+            {guestOptions.map((option) => (
+              <option key={option}>{option}</option>
+            ))}
           </select>
         </Field>
         <Field label="Full Name">
