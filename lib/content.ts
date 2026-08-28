@@ -154,7 +154,7 @@ export const PRICING = {
   ] as { season: "low" | "high" | "peak"; start: string; end: string }[],
   // Minimum nights required, by season. Peak is grouped with High per the
   // client's stay-length policy (Normal/Low: 2 nights, Peak/High: 3 nights).
-  minStay: { low: 2, high: 3, peak: 3 } as Record<"low" | "high" | "peak", number>,
+  minStay: { low: 2, high: 2, peak: 3 } as Record<"low" | "high" | "peak", number>,
   rates: [
     { room: "Superior Room", low: 186, high: 205, peak: 240 },
     { room: "Deluxe Room", low: 201, high: 220, peak: 255 },
@@ -207,7 +207,7 @@ export const FAQ = {
     {
       question: "Is there a minimum stay?",
       answer:
-        "Yes — a minimum stay of 2 nights applies in Low Season, and 3 nights in High and Peak Season. The applicable minimum is shown automatically once you select your dates.",
+        "Yes — Min Stay: 2 Nights (High & Low Seasons). Min Stay: 3 Nights (Peak Season). The applicable minimum is shown automatically once you select your dates.",
     },
     {
       question: "How much deposit do I need to pay to book?",
