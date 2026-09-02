@@ -40,10 +40,7 @@ export default async function HomePage() {
             cooking, a cocktail bar and easy access to the island&apos;s beaches, boulders and back roads.
           </p>
           <div className="flex flex-wrap gap-4 mt-7">
-            <Link href="/rooms#booking" className="btn-primary">
-              Book Your Room
-            </Link>
-            <a href="#booking" className="btn-ghost">
+            <a href="#booking" className="btn-primary">
               Check Availability
             </a>
           </div>

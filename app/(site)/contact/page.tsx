@@ -77,7 +77,7 @@ export default async function ContactPage() {
           <Reveal delay={0.1}>
             <span className="font-script text-3xl text-gold-deep block leading-none mb-1">Send a message</span>
             <h2 className="font-display font-semibold text-3xl text-green-deep mb-6">Get in Touch</h2>
-            <ContactForm />
+            <ContactForm site={site} />
           </Reveal>
         </div>
       </section>

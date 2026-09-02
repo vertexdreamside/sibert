@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -9,6 +9,8 @@ import { AlertTriangle, Lock, MessageCircleQuestion, ShieldCheck } from "lucide-
 import type { Room, Availability, Pricing, SiteInfo } from "@/lib/content";
 import { whatsAppLink } from "@/lib/content";
 import { computeStay, seasonLabel } from "@/lib/booking";
+import { sendBookingEnquiry } from "@/app/(site)/actions";
+import BookingRequestModal from "@/components/BookingRequestModal";
 import DateField from "@/components/DateField";
 import { fromISODate } from "@/lib/date";
 
@@ -31,17 +33,6 @@ const panelSchema = z.object({
 type CompactValues = z.infer<typeof compactSchema>;
 type PanelValues = z.infer<typeof panelSchema>;
 
-function useSubmitState() {
-  const [status, setStatus] = useState<"idle" | "loading" | "done">("idle");
-  const run = async () => {
-    setStatus("loading");
-    await new Promise((r) => setTimeout(r, 900));
-    setStatus("done");
-    setTimeout(() => setStatus("idle"), 2200);
-  };
-  return { status, run };
-}
-
 /** Every room's blocked dates merged — used where no single room is selected yet. */
 function allBlockedDates(availability: Availability): string[] {
   return Array.from(new Set(Object.values(availability.blockedDates).flat()));
@@ -62,7 +53,7 @@ export function BookingWidgetCompact({
   pricing: Pricing;
   site: SiteInfo;
 }) {
-  const router = useRouter();
+  const [modalOpen, setModalOpen] = useState(false);
   const {
     control,
     handleSubmit,
@@ -74,6 +65,8 @@ export function BookingWidgetCompact({
   });
   const arrival = watch("arrival");
   const departure = watch("departure");
+  const adults = watch("adults");
+  const children = watch("children");
   const blocked = useMemo(() => allBlockedDates(availability), [availability]);
 
   const stay = useMemo(() => {
@@ -84,10 +77,9 @@ export function BookingWidgetCompact({
   const unknownSeason = Boolean(stay && stay.season === null);
   const blockedByMinStay = Boolean(stay && stay.season !== null && !stay.meetsMinStay);
 
-  const onSubmit = handleSubmit((values) => {
+  const onSubmit = handleSubmit(() => {
     if (unknownSeason || blockedByMinStay) return; // blocked — message shown below
-    const params = new URLSearchParams({ arrival: values.arrival, departure: values.departure });
-    router.push(`/rooms?${params.toString()}#booking`);
+    setModalOpen(true);
   });
 
   return (
@@ -177,6 +169,20 @@ export function BookingWidgetCompact({
           </span>
         </p>
       )}
+
+      {stay && !unknownSeason && !blockedByMinStay && (
+        <BookingRequestModal
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          site={site}
+          arrival={arrival}
+          departure={departure}
+          adults={adults}
+          children={children}
+          nights={stay.nights}
+          seasonLabel={seasonLabel(stay.season)}
+        />
+      )}
     </form>
   );
 }
@@ -212,7 +218,8 @@ export function BookingPanel({
       email: "",
     },
   });
-  const { status, run } = useSubmitState();
+  const [status, setStatus] = useState<"idle" | "loading" | "done">("idle");
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   // Carry over dates picked in the homepage's compact widget, if present.
   useEffect(() => {
@@ -250,9 +257,31 @@ export function BookingPanel({
   const blockedByMinStay = Boolean(stay && stay.season !== null && !stay.meetsMinStay);
   const isBlocked = unknownSeason || blockedByMinStay;
 
-  const onSubmit = handleSubmit(async () => {
+  const onSubmit = handleSubmit(async (values) => {
     if (isBlocked) return;
-    await run();
+    setErrorMsg(null);
+    setStatus("loading");
+    const result = await sendBookingEnquiry({
+      toEmail: site.email,
+      guestName: values.name,
+      guestEmail: values.email,
+      arrival: values.arrival,
+      departure: values.departure,
+      roomName,
+      guests: values.guests,
+      nights: stay?.nights,
+      seasonLabel: stay ? seasonLabel(stay.season) : undefined,
+      nightlyRate: stay?.nightlyRate ?? null,
+      totalRate: stay?.totalRate ?? null,
+      currency: pricing.currency,
+    });
+    if (result.success) {
+      setStatus("done");
+      setTimeout(() => setStatus("idle"), 4000);
+    } else {
+      setStatus("idle");
+      setErrorMsg(result.error);
+    }
   });
 
   return (
@@ -373,22 +402,30 @@ export function BookingPanel({
         </div>
       )}
 
+      {errorMsg && (
+        <div className="flex items-start gap-3 mt-6 px-4 py-4 bg-red-50 border border-red-200 rounded-2xl text-sm text-red-700">
+          <AlertTriangle size={18} className="shrink-0 mt-0.5" />
+          <span>Couldn&apos;t send your request: {errorMsg}</span>
+        </div>
+      )}
+
       <button
         type="submit"
         disabled={status === "loading" || isBlocked}
         className="btn-primary mt-6 w-full sm:w-auto justify-center bg-green-deep text-sand disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {status === "loading"
-          ? "Checking availability…"
+          ? "Sending your request…"
           : status === "done"
-          ? "Request received ✓"
-          : "Continue to Secure Payment"}
+          ? "Request sent ✓ — check your email"
+          : "Send Booking Request"}
       </button>
       <div className="flex items-center gap-3 mt-6 px-4 py-4 bg-green-pale rounded-2xl text-sm text-ink-soft">
         <Lock size={18} className="text-green-deep shrink-0" />
         <span>
-          <strong className="text-green-deep">Secure payment</strong> — checkout is processed through CyberSource
-          Secure Acceptance. Card details are never stored on this site.
+          <strong className="text-green-deep">What happens next</strong> — we&apos;ll email you to confirm
+          availability and arrange secure payment via CyberSource Secure Acceptance. Card details are never entered
+          on this site.
         </span>
       </div>
     </form>
