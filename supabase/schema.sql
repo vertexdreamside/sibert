@@ -122,6 +122,7 @@ insert into site_content (key, value) values
     "description": "A sunlit retreat featuring a king size bed, coastal teal decor, and a private balcony with lush tropical views. Designed with cosy armchair seating and warm wooden finishes, it''s the ideal space for couples or solo travellers to unwind after a day on the island.",
     "bedding": "1 King Size Bed",
     "occupancy": "Max 2 Adults, or 1 Adult + 1 Child (6–11 yrs)",
+    "guestOptions": ["2 Adults", "1 Adult + 1 Child (6–11 yrs)"],
     "highlights": ["Private balcony", "Plush seating area", "Airy tile flooring"],
     "image": "/images/rooms/superior.png",
     "priceFrom": 186
@@ -133,6 +134,7 @@ insert into site_content (key, value) values
     "description": "Generously spaced to host couples or small families, the Deluxe Room features a main plush bed plus an extra single daybed. Comes fully appointed with a private ensuite bathroom, a full wooden wardrobe, and a dedicated vanity desk.",
     "bedding": "1 King Bed + 1 Single Bed",
     "occupancy": "Max 2 Adults + 1 Child (6–11 yrs), or 1 Adult + 2 Children (6–11 yrs)",
+    "guestOptions": ["2 Adults + 1 Child (6–11 yrs)", "1 Adult + 2 Children (6–11 yrs)"],
     "highlights": ["Extra spacious layout", "Private ensuite bathroom", "Generous storage space"],
     "image": "/images/rooms/deluxe.png",
     "priceFrom": 201
@@ -160,7 +162,7 @@ insert into site_content (key, value) values
     { "season": "peak", "start": "2026-12-21", "end": "2027-01-09" },
     { "season": "peak", "start": "2027-03-21", "end": "2027-04-04" }
   ],
-  "minStay": { "low": 2, "high": 3, "peak": 3 },
+  "minStay": { "low": 2, "high": 2, "peak": 3 },
   "rates": [
     { "room": "Superior Room", "low": 186, "high": 205, "peak": 240 },
     { "room": "Deluxe Room", "low": 201, "high": 220, "peak": 255 }
@@ -247,7 +249,7 @@ insert into site_content (key, value) values
   "items": [
     { "question": "What time is check-in and check-out?", "answer": "Check-in is from 12:00hrs and check-out is by 10:00hrs. Early check-in and late check-out are subject to availability — to guarantee early check-in before 12:00hrs or late check-out until 15:00hrs, an extra charge of 50% of one night''s accommodation applies." },
     { "question": "What are the restaurant''s opening hours?", "answer": "Breakfast: 07:00hrs – 10:00hrs. Lunch & Dinner: 11:00hrs – 21:00hrs (last order)." },
-    { "question": "Is there a minimum stay?", "answer": "Yes — a minimum stay of 2 nights applies in Low Season, and 3 nights in High and Peak Season. The applicable minimum is shown automatically once you select your dates." },
+    { "question": "Is there a minimum stay?", "answer": "Yes — Min Stay: 2 Nights (High & Low Seasons). Min Stay: 3 Nights (Peak Season). The applicable minimum is shown automatically once you select your dates." },
     { "question": "How much deposit do I need to pay to book?", "answer": "For Low and High Season stays, a 50% deposit is due 7 days before arrival, with the remaining 50% balance paid on check-in. For Peak Season stays, a 100% deposit is due 21 days before arrival." },
     { "question": "What is your cancellation policy?", "answer": "In High and Low Seasons, cancellations are free 8 or more days before arrival; 0–7 days before arrival incurs a 50% charge, and no-shows or early departures are charged in full. In Peak Season, cancellations are free 22 or more days before arrival; inside that window, or for no-shows and early departures, the full amount is charged." },
     { "question": "Do you offer half board?", "answer": "Yes — a Half Board Supplement of €75 per night per adult (12+ yrs) and €40 per night per child (6–11 yrs) can be added to a B&B booking." },
@@ -426,7 +428,7 @@ update site_content set value = '{
     { "season": "peak", "start": "2026-12-21", "end": "2027-01-09" },
     { "season": "peak", "start": "2027-03-21", "end": "2027-04-04" }
   ],
-  "minStay": { "low": 2, "high": 3, "peak": 3 },
+  "minStay": { "low": 2, "high": 2, "peak": 3 },
   "rates": [
     { "room": "Superior Room", "low": 186, "high": 205, "peak": 240 },
     { "room": "Deluxe Room", "low": 201, "high": 220, "peak": 255 }
@@ -462,7 +464,7 @@ update site_content set value = '{
   "items": [
     { "question": "What time is check-in and check-out?", "answer": "Check-in is from 12:00hrs and check-out is by 10:00hrs. Early check-in and late check-out are subject to availability — to guarantee early check-in before 12:00hrs or late check-out until 15:00hrs, an extra charge of 50% of one night''s accommodation applies." },
     { "question": "What are the restaurant''s opening hours?", "answer": "Breakfast: 07:00hrs – 10:00hrs. Lunch & Dinner: 11:00hrs – 21:00hrs (last order)." },
-    { "question": "Is there a minimum stay?", "answer": "Yes — a minimum stay of 2 nights applies in Low Season, and 3 nights in High and Peak Season. The applicable minimum is shown automatically once you select your dates." },
+    { "question": "Is there a minimum stay?", "answer": "Yes — Min Stay: 2 Nights (High & Low Seasons). Min Stay: 3 Nights (Peak Season). The applicable minimum is shown automatically once you select your dates." },
     { "question": "How much deposit do I need to pay to book?", "answer": "For Low and High Season stays, a 50% deposit is due 7 days before arrival, with the remaining 50% balance paid on check-in. For Peak Season stays, a 100% deposit is due 21 days before arrival." },
     { "question": "What is your cancellation policy?", "answer": "In High and Low Seasons, cancellations are free 8 or more days before arrival; 0–7 days before arrival incurs a 50% charge, and no-shows or early departures are charged in full. In Peak Season, cancellations are free 22 or more days before arrival; inside that window, or for no-shows and early departures, the full amount is charged." },
     { "question": "Do you offer half board?", "answer": "Yes — a Half Board Supplement of €75 per night per adult (12+ yrs) and €40 per night per child (6–11 yrs) can be added to a B&B booking." },
@@ -483,3 +485,55 @@ set value = value || '{
   "slogan": "Your Serene Hideaway in La Digue"
 }'::jsonb
 where key = 'site' and not (value ? 'slogan');
+
+-- ============================================================
+-- 10. Add per-room "guestOptions" (drives the Guests dropdown
+--     in the booking form so it only offers combinations that
+--     actually fit that room's max occupancy). This assumes
+--     rooms are still in the default order (index 0 = Superior,
+--     index 1 = Deluxe) — if you've reordered or added rooms via
+--     the admin panel, add "guestOptions" for the new/reordered
+--     rooms directly from Admin → Rooms instead of running this.
+-- ============================================================
+
+update site_content
+set value = jsonb_set(
+  jsonb_set(
+    value,
+    '{0,guestOptions}',
+    '["2 Adults", "1 Adult + 1 Child (6–11 yrs)"]'::jsonb
+  ),
+  '{1,guestOptions}',
+  '["2 Adults + 1 Child (6–11 yrs)", "1 Adult + 2 Children (6–11 yrs)"]'::jsonb
+)
+where key = 'rooms' and not (value -> 0 ? 'guestOptions');
+
+-- ============================================================
+-- 11. Policy change (client-confirmed): High Season minimum
+--     stay drops from 3 nights to 2, now grouped with Low
+--     Season. Peak Season stays at 3 nights.
+--     This only touches minStay.high on 'pricing' (safe — won't
+--     affect rates, offers, or anything else you've edited) and
+--     the minimum-stay FAQ answer specifically.
+-- ============================================================
+
+update site_content
+set value = jsonb_set(value, '{minStay,high}', '2')
+where key = 'pricing';
+
+update site_content
+set value = jsonb_set(
+  value,
+  '{items}',
+  (
+    select jsonb_agg(
+      case
+        when item ->> 'question' = 'Is there a minimum stay?'
+        then jsonb_set(item, '{answer}', '"Yes — Min Stay: 2 Nights (High & Low Seasons). Min Stay: 3 Nights (Peak Season). The applicable minimum is shown automatically once you select your dates."')
+        else item
+      end
+    )
+    from jsonb_array_elements(value -> 'items') as item
+  )
+)
+where key = 'faq';
