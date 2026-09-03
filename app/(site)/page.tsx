@@ -47,7 +47,7 @@ export default async function HomePage() {
 
       {/* ===== Booking widget ===== */}
       <div className="max-w-[1180px] mx-auto px-5 sm:px-8">
-        <BookingWidgetCompact availability={availability} pricing={pricing} site={site} />
+        <BookingWidgetCompact availability={availability} pricing={pricing} site={site} rooms={rooms} />
       </div>
 
       {/* ===== About ===== */}

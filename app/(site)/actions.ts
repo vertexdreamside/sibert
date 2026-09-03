@@ -21,6 +21,35 @@ function escapeHtml(value: string): string {
     .replace(/"/g, "&quot;");
 }
 
+/** A simple, email-client-safe HTML table of label/value rows. Blank values are skipped. */
+function detailsTable(rows: [string, string | undefined][]): string {
+  const cells = rows
+    .filter((row): row is [string, string] => Boolean(row[1]))
+    .map(
+      ([label, value]) => `
+        <tr>
+          <td style="padding:9px 14px;border-bottom:1px solid #EDE3CE;color:#8C8577;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.03em;white-space:nowrap;vertical-align:top;">${escapeHtml(
+            label
+          )}</td>
+          <td style="padding:9px 14px;border-bottom:1px solid #EDE3CE;color:#16241C;font-size:14px;">${value}</td>
+        </tr>`
+    )
+    .join("");
+  return `<table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse:collapse;width:100%;max-width:480px;margin:16px 0;border:1px solid #EDE3CE;border-radius:8px;overflow:hidden;">${cells}</table>`;
+}
+
+/** Wraps email body content in a consistent shell (heading + footer note). */
+function emailShell(heading: string, bodyHtml: string, footerNote: string): string {
+  return `
+    <div style="font-family:Georgia,'Times New Roman',serif;color:#16241C;max-width:560px;">
+      <h2 style="color:#0F3D2E;font-size:20px;margin:0 0 16px;">${heading}</h2>
+      ${bodyHtml}
+      <hr style="border:none;border-top:1px solid #EDE3CE;margin:24px 0 12px;" />
+      <p style="color:#8C8577;font-size:12px;margin:0;">${footerNote}</p>
+    </div>
+  `;
+}
+
 export type BookingEnquiryInput = {
   toEmail: string;
   guestName: string;
@@ -45,24 +74,30 @@ export async function sendBookingEnquiry(input: BookingEnquiryInput) {
     };
   }
 
-  const rateLine =
+  const rateValue =
     input.nightlyRate != null && input.totalRate != null
-      ? `<p><strong>Rate:</strong> ${input.currency ?? "€"}${input.nightlyRate}/night · ${input.currency ?? "€"}${input.totalRate} total</p>`
-      : "";
+      ? `${input.currency ?? "€"}${input.nightlyRate}/night · ${input.currency ?? "€"}${input.totalRate} total`
+      : undefined;
 
-  const html = `
-    <h2>New Booking Enquiry — Sibert Residence</h2>
-    <p><strong>Name:</strong> ${escapeHtml(input.guestName)}</p>
-    <p><strong>Email:</strong> ${escapeHtml(input.guestEmail)}</p>
-    <p><strong>Room:</strong> ${escapeHtml(input.roomName ?? "—")}</p>
-    <p><strong>Guests:</strong> ${escapeHtml(input.guests ?? "—")}</p>
-    <p><strong>Arrival:</strong> ${escapeHtml(input.arrival)}</p>
-    <p><strong>Departure:</strong> ${escapeHtml(input.departure)}</p>
-    <p><strong>Nights:</strong> ${input.nights ?? "—"} (${escapeHtml(input.seasonLabel ?? "—")})</p>
-    ${rateLine}
-    <hr />
-    <p style="color:#8C8577;font-size:12px;">Sent automatically from the Sibert Residence website booking form.</p>
-  `;
+  const table = detailsTable([
+    ["Name", escapeHtml(input.guestName)],
+    ["Email", escapeHtml(input.guestEmail)],
+    ["Room", input.roomName ? escapeHtml(input.roomName) : undefined],
+    ["Guests", input.guests ? escapeHtml(input.guests) : undefined],
+    ["Arrival", escapeHtml(input.arrival)],
+    ["Departure", escapeHtml(input.departure)],
+    [
+      "Nights",
+      input.nights != null ? `${input.nights} (${escapeHtml(input.seasonLabel ?? "—")})` : undefined,
+    ],
+    ["Rate", rateValue],
+  ]);
+
+  const html = emailShell(
+    "New Booking Enquiry — Sibert Residence",
+    table,
+    "Sent automatically from the Sibert Residence website booking form."
+  );
 
   try {
     const { error } = await resend.emails.send({
@@ -88,6 +123,8 @@ export type AvailabilityRequestInput = {
   departure: string;
   adults: string;
   children: string;
+  roomName?: string;
+  guests?: string;
   nights?: number;
   seasonLabel?: string;
   /** Honeypot field — real visitors never fill this in. If it's non-empty,
@@ -109,17 +146,31 @@ export async function sendAvailabilityRequest(input: AvailabilityRequestInput) {
     };
   }
 
-  const summaryLine = `${escapeHtml(input.arrival)} → ${escapeHtml(input.departure)} · ${input.nights ?? "—"} night${input.nights === 1 ? "" : "s"} (${escapeHtml(input.seasonLabel ?? "—")}) · ${escapeHtml(input.adults)} adult${input.adults === "1" ? "" : "s"}${Number(input.children) > 0 ? `, ${escapeHtml(input.children)} child${input.children === "1" ? "" : "ren"}` : ""}`;
+  const tripRows: [string, string | undefined][] = [
+    ["Arrival", escapeHtml(input.arrival)],
+    ["Departure", escapeHtml(input.departure)],
+    [
+      "Nights",
+      input.nights != null
+        ? `${input.nights} night${input.nights === 1 ? "" : "s"} (${escapeHtml(input.seasonLabel ?? "—")})`
+        : undefined,
+    ],
+    ["Room", input.roomName ? escapeHtml(input.roomName) : undefined],
+    ["Guests", input.guests ? escapeHtml(input.guests) : undefined],
+  ];
 
-  const businessHtml = `
-    <h2>New Availability Request — Sibert Residence</h2>
-    <p><strong>Name:</strong> ${escapeHtml(input.name)}</p>
-    <p><strong>Email:</strong> ${escapeHtml(input.email)}</p>
-    <p><strong>Phone:</strong> ${escapeHtml(input.phone)}</p>
-    <p><strong>Trip:</strong> ${summaryLine}</p>
-    <hr />
-    <p style="color:#8C8577;font-size:12px;">Sent automatically from the Sibert Residence website "Check Availability" form.</p>
-  `;
+  const businessTable = detailsTable([
+    ["Name", escapeHtml(input.name)],
+    ["Email", escapeHtml(input.email)],
+    ["Phone", escapeHtml(input.phone)],
+    ...tripRows,
+  ]);
+
+  const businessHtml = emailShell(
+    "New Availability Request — Sibert Residence",
+    businessTable,
+    'Sent automatically from the Sibert Residence website "Check Availability" form.'
+  );
 
   try {
     const { error } = await resend.emails.send({
@@ -137,14 +188,18 @@ export async function sendAvailabilityRequest(input: AvailabilityRequestInput) {
   // Confirmation back to the guest — best-effort; the business copy above is
   // what matters, so a failure here doesn't fail the whole submission.
   try {
-    const customerHtml = `
-      <h2>We've received your request</h2>
-      <p>Hi ${escapeHtml(input.name)},</p>
-      <p>Thanks for checking availability at Sibert Residence — here's what you sent us:</p>
-      <p>${summaryLine}</p>
-      <p>We'll get back to you shortly by email to confirm availability and the next steps.</p>
-      <p>If it's urgent, you're welcome to reach us on WhatsApp any time.</p>
-    `;
+    const tripTable = detailsTable(tripRows);
+    const customerHtml = emailShell(
+      "We've received your request",
+      `
+        <p style="margin:0 0 8px;">Hi ${escapeHtml(input.name)},</p>
+        <p style="margin:0 0 8px;">Thanks for checking availability at Sibert Residence — here's what you sent us:</p>
+        ${tripTable}
+        <p style="margin:16px 0 8px;">We'll get back to you shortly by email to confirm availability and the next steps.</p>
+        <p style="margin:0;">If it's urgent, you're welcome to reach us on WhatsApp any time.</p>
+      `,
+      "Sibert Residence · La Passe, La Digue, Seychelles"
+    );
     await resend.emails.send({
       from: FROM_EMAIL,
       to: input.email,
@@ -175,16 +230,21 @@ export async function sendContactMessage(input: ContactMessageInput) {
     };
   }
 
-  const html = `
-    <h2>New Contact Message — Sibert Residence</h2>
-    <p><strong>Name:</strong> ${escapeHtml(input.name)}</p>
-    <p><strong>Email:</strong> ${escapeHtml(input.email)}</p>
-    ${input.subject ? `<p><strong>Subject:</strong> ${escapeHtml(input.subject)}</p>` : ""}
-    <p><strong>Message:</strong></p>
-    <p>${escapeHtml(input.message).replace(/\n/g, "<br />")}</p>
-    <hr />
-    <p style="color:#8C8577;font-size:12px;">Sent automatically from the Sibert Residence website contact form.</p>
-  `;
+  const table = detailsTable([
+    ["Name", escapeHtml(input.name)],
+    ["Email", escapeHtml(input.email)],
+    ["Subject", input.subject ? escapeHtml(input.subject) : undefined],
+  ]);
+
+  const html = emailShell(
+    "New Contact Message — Sibert Residence",
+    `
+      ${table}
+      <p style="margin:16px 0 4px;font-weight:600;">Message</p>
+      <p style="margin:0;white-space:pre-wrap;">${escapeHtml(input.message)}</p>
+    `,
+    "Sent automatically from the Sibert Residence website contact form."
+  );
 
   try {
     const { error } = await resend.emails.send({
