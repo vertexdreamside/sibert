@@ -48,10 +48,12 @@ export function BookingWidgetCompact({
   availability,
   pricing,
   site,
+  rooms,
 }: {
   availability: Availability;
   pricing: Pricing;
   site: SiteInfo;
+  rooms: Room[];
 }) {
   const [modalOpen, setModalOpen] = useState(false);
   const {
@@ -175,6 +177,7 @@ export function BookingWidgetCompact({
           open={modalOpen}
           onClose={() => setModalOpen(false)}
           site={site}
+          rooms={rooms}
           arrival={arrival}
           departure={departure}
           adults={adults}
