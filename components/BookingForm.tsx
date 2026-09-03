@@ -83,9 +83,8 @@ export function BookingWidgetCompact({
   });
 
   return (
-    <form
+    <div
       id="booking"
-      onSubmit={onSubmit}
       className="bg-white rounded-3xl shadow-[0_30px_60px_-24px_rgba(15,61,46,0.4)] p-5 sm:p-6 md:p-7 mt-6 sm:mt-4 md:-mt-14 relative z-[5]"
     >
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 items-end">
@@ -136,7 +135,8 @@ export function BookingWidgetCompact({
           />
         </Field>
         <button
-          type="submit"
+          type="button"
+          onClick={onSubmit}
           disabled={unknownSeason || blockedByMinStay}
           className="btn-primary justify-center whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -183,7 +183,7 @@ export function BookingWidgetCompact({
           seasonLabel={seasonLabel(stay.season)}
         />
       )}
-    </form>
+    </div>
   );
 }
 
