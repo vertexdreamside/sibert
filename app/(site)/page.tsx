@@ -39,11 +39,6 @@ export default async function HomePage() {
             Sibert Residence is a family-run guest house on La Passe beach, La Digue — relaxed rooms, Creole
             cooking, a cocktail bar and easy access to the island&apos;s beaches, boulders and back roads.
           </p>
-          <div className="flex flex-wrap gap-4 mt-7">
-            <a href="#booking" className="btn-primary">
-              Check Availability
-            </a>
-          </div>
         </div>
         <span className="hidden md:flex absolute right-10 bottom-9 z-[2] text-sand items-center gap-2.5 text-xs tracking-[0.3em] uppercase opacity-85 [writing-mode:vertical-rl]">
           Scroll
