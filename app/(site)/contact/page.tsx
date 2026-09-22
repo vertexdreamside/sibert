@@ -6,6 +6,7 @@ import ContactForm from "@/components/ContactForm";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
 import WhatsAppIcon from "@/components/icons/WhatsAppIcon";
 import { getExteriorImages, getSite } from "@/lib/cms";
+import { FEATURES } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -89,8 +90,11 @@ export default async function ContactPage() {
             <h2 className="font-display font-semibold text-3xl text-green-deep mb-6">
               Check availability and reserve online
             </h2>
-            <Link href="/rooms#booking" className="btn-primary bg-green-deep text-sand">
-              Book Your Stay
+            <Link
+              href={FEATURES.roomBookingEnabled ? "/rooms#booking" : "/#booking"}
+              className="btn-primary bg-green-deep text-sand"
+            >
+              {FEATURES.roomBookingEnabled ? "Book Your Stay" : "Check Availability"}
             </Link>
           </Reveal>
         </div>

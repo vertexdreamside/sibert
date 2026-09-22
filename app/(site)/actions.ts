@@ -50,69 +50,10 @@ function emailShell(heading: string, bodyHtml: string, footerNote: string): stri
   `;
 }
 
-export type BookingEnquiryInput = {
-  toEmail: string;
-  guestName: string;
-  guestEmail: string;
-  arrival: string;
-  departure: string;
-  roomName?: string;
-  guests?: string;
-  nights?: number;
-  seasonLabel?: string;
-  nightlyRate?: number | null;
-  totalRate?: number | null;
-  currency?: string;
-};
-
-export async function sendBookingEnquiry(input: BookingEnquiryInput) {
-  const resend = getResend();
-  if (!resend) {
-    return {
-      success: false as const,
-      error: "Email sending isn't configured yet. Set RESEND_API_KEY (see .env.example).",
-    };
-  }
-
-  const rateValue =
-    input.nightlyRate != null && input.totalRate != null
-      ? `${input.currency ?? "€"}${input.nightlyRate}/night · ${input.currency ?? "€"}${input.totalRate} total`
-      : undefined;
-
-  const table = detailsTable([
-    ["Name", escapeHtml(input.guestName)],
-    ["Email", escapeHtml(input.guestEmail)],
-    ["Room", input.roomName ? escapeHtml(input.roomName) : undefined],
-    ["Guests", input.guests ? escapeHtml(input.guests) : undefined],
-    ["Arrival", escapeHtml(input.arrival)],
-    ["Departure", escapeHtml(input.departure)],
-    [
-      "Nights",
-      input.nights != null ? `${input.nights} (${escapeHtml(input.seasonLabel ?? "—")})` : undefined,
-    ],
-    ["Rate", rateValue],
-  ]);
-
-  const html = emailShell(
-    "New Booking Enquiry — Sibert Residence",
-    table,
-    "Sent automatically from the Sibert Residence website booking form."
-  );
-
-  try {
-    const { error } = await resend.emails.send({
-      from: FROM_EMAIL,
-      to: input.toEmail,
-      replyTo: input.guestEmail,
-      subject: `Booking Enquiry — ${input.roomName ?? "Room"} (${input.arrival} → ${input.departure})`,
-      html,
-    });
-    if (error) return { success: false as const, error: error.message };
-    return { success: true as const };
-  } catch (err) {
-    return { success: false as const, error: err instanceof Error ? err.message : "Failed to send email." };
-  }
-}
+// Note: the detailed "Booking Enquiry" flow (with its own name/email fields
+// and rate quote sent straight to email) was removed at the client's
+// request, so guests only have one enquiry path — "Availability Request"
+// below — and never a flow that could read as a guaranteed booking.
 
 export type AvailabilityRequestInput = {
   toEmail: string;
@@ -125,6 +66,8 @@ export type AvailabilityRequestInput = {
   children: string;
   roomName?: string;
   guests?: string;
+  /** Age(s) of any children in the party, as free text (e.g. "7, 9"). */
+  childAges?: string;
   nights?: number;
   seasonLabel?: string;
   /** Honeypot field — real visitors never fill this in. If it's non-empty,
@@ -157,6 +100,7 @@ export async function sendAvailabilityRequest(input: AvailabilityRequestInput) {
     ],
     ["Room", input.roomName ? escapeHtml(input.roomName) : undefined],
     ["Guests", input.guests ? escapeHtml(input.guests) : undefined],
+    ["Child age(s)", input.childAges ? escapeHtml(input.childAges) : undefined],
   ];
 
   const businessTable = detailsTable([

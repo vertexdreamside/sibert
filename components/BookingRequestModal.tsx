@@ -18,6 +18,8 @@ export default function BookingRequestModal({
   children,
   nights,
   seasonLabel,
+  initialRoomSlug,
+  initialGuests,
 }: {
   open: boolean;
   onClose: () => void;
@@ -29,31 +31,60 @@ export default function BookingRequestModal({
   children: string;
   nights: number;
   seasonLabel: string;
+  /** Optional — preselects the room/guests dropdowns, e.g. when the guest
+   *  already picked a room elsewhere on the page before opening this modal. */
+  initialRoomSlug?: string;
+  initialGuests?: string;
 }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [roomSlug, setRoomSlug] = useState(rooms[0]?.slug ?? "");
-  const [guests, setGuests] = useState(rooms[0]?.guestOptions?.[0] ?? "");
+  const [roomSlug, setRoomSlug] = useState(initialRoomSlug || rooms[0]?.slug || "");
+  const hasChildrenFromCompactWidget = Boolean(children && children !== "0");
+  const [guests, setGuests] = useState(() => {
+    if (initialGuests) return initialGuests;
+    const opts = rooms.find((r) => r.slug === (initialRoomSlug || rooms[0]?.slug))?.guestOptions ?? [];
+    // If the guest already told us (via the homepage widget) that children
+    // are coming, default straight to a child-inclusive room option so the
+    // age field shows immediately instead of only after they notice and
+    // change the dropdown themselves.
+    if (hasChildrenFromCompactWidget) {
+      const withChild = opts.find((o) => /child/i.test(o));
+      if (withChild) return withChild;
+    }
+    return opts[0] ?? "";
+  });
+  const [childAges, setChildAges] = useState("");
   const [honeypot, setHoneypot] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
 
   const room = rooms.find((r) => r.slug === roomSlug);
   const guestOptions = room?.guestOptions ?? [];
+  // Guest-option strings encode whether children are included, e.g.
+  // "1 Adult + 1 Child (6–11 yrs)" — ask for ages whenever that's the
+  // selected option, or when the guest already indicated a child count
+  // via the homepage widget's Adults/Children selectors.
+  const includesChild = /child/i.test(guests) || hasChildrenFromCompactWidget;
 
   useEffect(() => {
     if (guestOptions.length > 0 && !guestOptions.includes(guests)) {
-      setGuests(guestOptions[0]);
+      const withChild = hasChildrenFromCompactWidget ? guestOptions.find((o) => /child/i.test(o)) : undefined;
+      setGuests(withChild ?? guestOptions[0]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomSlug]);
+
+  useEffect(() => {
+    if (!includesChild) setChildAges("");
+  }, [includesChild]);
 
   if (!open) return null;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!name || !email || !phone) return;
+    if (includesChild && !childAges) return;
     setStatus("loading");
     setError(null);
     const result = await sendAvailabilityRequest({
@@ -67,6 +98,7 @@ export default function BookingRequestModal({
       children,
       roomName: room?.name,
       guests,
+      childAges: includesChild ? childAges : undefined,
       nights,
       seasonLabel,
       honeypot,
@@ -85,6 +117,7 @@ export default function BookingRequestModal({
       setName("");
       setEmail("");
       setPhone("");
+      setChildAges("");
       setStatus("idle");
       setError(null);
     }, 200);
@@ -159,6 +192,22 @@ export default function BookingRequestModal({
                   </select>
                 </div>
               </div>
+
+              {includesChild && (
+                <div>
+                  <label className="text-[0.68rem] uppercase tracking-wide text-ink-soft font-semibold mb-1 block">
+                    Child age(s)
+                  </label>
+                  <input
+                    type="text"
+                    value={childAges}
+                    onChange={(e) => setChildAges(e.target.value)}
+                    placeholder="e.g. 7, 9"
+                    required
+                    className="field-input w-full"
+                  />
+                </div>
+              )}
 
               <input
                 type="text"

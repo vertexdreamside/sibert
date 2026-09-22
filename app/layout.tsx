@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   description:
     "Sibert Residence is a family-run guest house on La Passe beach, La Digue, Seychelles — five minutes from the jetty, with Creole dining, a cocktail bar, souvenir shop and island excursions.",
   icons: {
-    icon: "https://sibert.sc/wp-content/uploads/2020/11/cropped-Sibert-logo-scaled-1-270x270.png",
+    icon: "/images/logo/sibert-logo-green.png",
   },
 };
 

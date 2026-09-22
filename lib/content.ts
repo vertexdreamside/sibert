@@ -14,10 +14,8 @@ export const SITE = {
   mapsHref: "https://www.google.com/maps/search/?api=1&query=Sibert+Residence%2C+La+Passe%2C+La+Digue%2C+Seychelles",
   mapsEmbedSrc:
     "https://maps.google.com/maps?q=Sibert%20Residence%2C%20La%20Passe%2C%20La%20Digue%2C%20Seychelles&t=&z=17&ie=UTF8&iwloc=&output=embed",
-  logoWhite:
-    "https://sibert.sc/wp-content/uploads/2020/11/Sibert-logo-white-A3--scaled.png",
-  logoMark:
-    "https://sibert.sc/wp-content/uploads/2020/11/cropped-Sibert-logo-scaled-1-270x270.png",
+  logoWhite: "/images/logo/sibert-logo-white.png",
+  logoMark: "/images/logo/sibert-logo-white.png",
   social: {
     facebook: "https://www.facebook.com/share/1KKimtbTF",
     instagram: "https://www.instagram.com/sibertresidence/",
@@ -25,6 +23,21 @@ export const SITE = {
 };
 
 export type SiteInfo = typeof SITE;
+
+/**
+ * Simple on/off switches for features the client may want to pause
+ * temporarily without losing the work. To bring a feature back, flip its
+ * flag back to `true` — nothing else needs to change.
+ */
+export const FEATURES = {
+  /** The Rooms page's "Book Your Stay" panel — dates, room, guests, the
+   *  live rate/season/terms preview, and the Check Availability button
+   *  that opens the enquiry popup. Set to `false` to keep all of that
+   *  information visible to guests while hiding the button that actually
+   *  starts an enquiry from this panel (guests can still enquire via the
+   *  homepage's Check Availability widget or WhatsApp). */
+  roomBookingEnabled: false,
+};
 
 /** Build a wa.me link with a custom pre-filled message, using the site's WhatsApp number. */
 export function whatsAppLink(site: SiteInfo, message: string): string {

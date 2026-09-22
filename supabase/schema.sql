@@ -93,8 +93,8 @@ insert into site_content (key, value) values
   "address": "La Passe, La Digue, Seychelles",
   "mapsHref": "https://www.google.com/maps/search/?api=1&query=Sibert+Residence%2C+La+Passe%2C+La+Digue%2C+Seychelles",
   "mapsEmbedSrc": "https://maps.google.com/maps?q=Sibert%20Residence%2C%20La%20Passe%2C%20La%20Digue%2C%20Seychelles&t=&z=17&ie=UTF8&iwloc=&output=embed",
-  "logoWhite": "https://sibert.sc/wp-content/uploads/2020/11/Sibert-logo-white-A3--scaled.png",
-  "logoMark": "https://sibert.sc/wp-content/uploads/2020/11/cropped-Sibert-logo-scaled-1-270x270.png",
+  "logoWhite": "/images/logo/sibert-logo-white.png",
+  "logoMark": "/images/logo/sibert-logo-white.png",
   "social": {
     "facebook": "https://www.facebook.com/share/1KKimtbTF",
     "instagram": "https://www.instagram.com/sibertresidence/"
@@ -537,3 +537,19 @@ set value = jsonb_set(
   )
 )
 where key = 'faq';
+
+-- ============================================================
+-- 12. Logo fix: the logo was pointing at the old WordPress site
+--     (sibert.sc/wp-content/uploads/...), which is why it wasn't
+--     showing. The logo is now self-hosted in /public/images/logo
+--     as a white cut-out (the header/footer/loader all have a dark
+--     green background, so a white logo is what actually shows up).
+--     Only touches 'site'.logoWhite / 'site'.logoMark.
+-- ============================================================
+
+update site_content
+set value = jsonb_set(
+  jsonb_set(value, '{logoWhite}', '"/images/logo/sibert-logo-white.png"'),
+  '{logoMark}', '"/images/logo/sibert-logo-white.png"'
+)
+where key = 'site';

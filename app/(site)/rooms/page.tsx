@@ -119,9 +119,9 @@ export default async function RoomsPage() {
           <Reveal>
             <SectionHead
               center
-              eyebrow="Reserve your room"
+              eyebrow="Check availability"
               title="Book Your Stay"
-              description="Select your dates and room below to see your rate, any offers you qualify for, and our booking terms."
+              description="Select your dates and room below to see the rate and any offers for your stay, then send us an availability request — we'll confirm by email before anything is final."
             />
           </Reveal>
           <Suspense fallback={null}>

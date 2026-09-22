@@ -6,7 +6,12 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { X, ChevronRight, Facebook, Instagram } from "lucide-react";
-import { NAV_LINKS, type SiteInfo } from "@/lib/content";
+import { NAV_LINKS, FEATURES, type SiteInfo } from "@/lib/content";
+
+// Where the site-wide "Book Your Stay" CTA points, depending on whether
+// the Rooms page's own booking panel is active (see FEATURES in lib/content.ts).
+const bookCtaHref = FEATURES.roomBookingEnabled ? "/rooms#booking" : "/#booking";
+const bookCtaLabel = FEATURES.roomBookingEnabled ? "Book Your Stay" : "Check Availability";
 
 export default function Header({ site }: { site: SiteInfo }) {
   const [open, setOpen] = useState(false);
@@ -62,10 +67,10 @@ export default function Header({ site }: { site: SiteInfo }) {
         </Link>
 
         <Link
-          href="/rooms#booking"
+          href={bookCtaHref}
           className="inline-flex items-center gap-2 bg-gold text-green-deep font-semibold text-sm px-5 py-3 rounded-full shadow-[0_10px_24px_-10px_rgba(227,168,87,0.7)] hover:bg-white transition-all hover:-translate-y-0.5"
         >
-          Book Your Stay
+          {bookCtaLabel}
         </Link>
       </header>
 

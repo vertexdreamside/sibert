@@ -7,9 +7,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { AlertTriangle, Lock, MessageCircleQuestion, ShieldCheck } from "lucide-react";
 import type { Room, Availability, Pricing, SiteInfo } from "@/lib/content";
-import { whatsAppLink } from "@/lib/content";
+import { whatsAppLink, FEATURES } from "@/lib/content";
 import { computeStay, seasonLabel } from "@/lib/booking";
-import { sendBookingEnquiry } from "@/app/(site)/actions";
 import BookingRequestModal from "@/components/BookingRequestModal";
 import DateField from "@/components/DateField";
 import { fromISODate } from "@/lib/date";
@@ -26,8 +25,6 @@ const panelSchema = z.object({
   departure: z.string().min(1, "Required"),
   room: z.string().min(1, "Required"),
   guests: z.string(),
-  name: z.string().min(2, "Enter your full name"),
-  email: z.string().email("Enter a valid email"),
 });
 
 type CompactValues = z.infer<typeof compactSchema>;
@@ -209,7 +206,6 @@ export function BookingPanel({
     watch,
     reset,
     setValue,
-    formState: { errors },
   } = useForm<PanelValues>({
     resolver: zodResolver(panelSchema),
     defaultValues: {
@@ -217,12 +213,9 @@ export function BookingPanel({
       departure: "",
       room: rooms[0]?.slug ?? "",
       guests: rooms[0]?.guestOptions[0] ?? "2 Adults",
-      name: "",
-      email: "",
     },
   });
-  const [status, setStatus] = useState<"idle" | "loading" | "done">("idle");
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   // Carry over dates picked in the homepage's compact widget, if present.
   useEffect(() => {
@@ -260,35 +253,13 @@ export function BookingPanel({
   const blockedByMinStay = Boolean(stay && stay.season !== null && !stay.meetsMinStay);
   const isBlocked = unknownSeason || blockedByMinStay;
 
-  const onSubmit = handleSubmit(async (values) => {
-    if (isBlocked) return;
-    setErrorMsg(null);
-    setStatus("loading");
-    const result = await sendBookingEnquiry({
-      toEmail: site.email,
-      guestName: values.name,
-      guestEmail: values.email,
-      arrival: values.arrival,
-      departure: values.departure,
-      roomName,
-      guests: values.guests,
-      nights: stay?.nights,
-      seasonLabel: stay ? seasonLabel(stay.season) : undefined,
-      nightlyRate: stay?.nightlyRate ?? null,
-      totalRate: stay?.totalRate ?? null,
-      currency: pricing.currency,
-    });
-    if (result.success) {
-      setStatus("done");
-      setTimeout(() => setStatus("idle"), 4000);
-    } else {
-      setStatus("idle");
-      setErrorMsg(result.error);
-    }
+  const onSubmit = handleSubmit(() => {
+    if (isBlocked) return; // blocked — message shown below
+    setModalOpen(true);
   });
 
   return (
-    <form id="booking" onSubmit={onSubmit} className="bg-white rounded-3xl shadow-soft p-6 sm:p-8 md:p-11">
+    <div id="booking" className="bg-white rounded-3xl shadow-soft p-6 sm:p-8 md:p-11">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <Controller
           control={control}
@@ -325,14 +296,6 @@ export function BookingPanel({
               <option key={option}>{option}</option>
             ))}
           </select>
-        </Field>
-        <Field label="Full Name">
-          <input type="text" placeholder="Your name" {...register("name")} className="field-input" />
-          {errors.name && <FieldError text={errors.name.message} />}
-        </Field>
-        <Field label="Email">
-          <input type="email" placeholder="you@example.com" {...register("email")} className="field-input" />
-          {errors.email && <FieldError text={errors.email.message} />}
         </Field>
       </div>
 
@@ -405,33 +368,63 @@ export function BookingPanel({
         </div>
       )}
 
-      {errorMsg && (
-        <div className="flex items-start gap-3 mt-6 px-4 py-4 bg-red-50 border border-red-200 rounded-2xl text-sm text-red-700">
-          <AlertTriangle size={18} className="shrink-0 mt-0.5" />
-          <span>Couldn&apos;t send your request: {errorMsg}</span>
+      {FEATURES.roomBookingEnabled ? (
+        <>
+          <button
+            type="button"
+            onClick={onSubmit}
+            disabled={isBlocked}
+            className="btn-primary mt-6 w-full sm:w-auto justify-center bg-green-deep text-sand disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Check Availability
+          </button>
+          <div className="flex items-center gap-3 mt-6 px-4 py-4 bg-green-pale rounded-2xl text-sm text-ink-soft">
+            <Lock size={18} className="text-green-deep shrink-0" />
+            <span>
+              <strong className="text-green-deep">What happens next</strong> — this sends an availability request,
+              not a confirmed booking. We&apos;ll reply by email to confirm availability and arrange next steps.
+            </span>
+          </div>
+        </>
+      ) : (
+        <div className="flex items-start gap-3 mt-6 px-4 py-4 bg-green-pale rounded-2xl text-sm text-ink-soft">
+          <MessageCircleQuestion size={18} className="shrink-0 mt-0.5 text-green-deep" />
+          <span>
+            To check availability and enquire for these dates, use the{" "}
+            <a href="/#booking" className="underline text-green-deep font-medium">
+              Check Availability
+            </a>{" "}
+            widget on the homepage, or{" "}
+            <a
+              href={whatsAppLink(site, "Hello, I'd like to check availability for a stay at Sibert Residence.")}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline text-green-deep font-medium"
+            >
+              message us on WhatsApp
+            </a>
+            .
+          </span>
         </div>
       )}
 
-      <button
-        type="submit"
-        disabled={status === "loading" || isBlocked}
-        className="btn-primary mt-6 w-full sm:w-auto justify-center bg-green-deep text-sand disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        {status === "loading"
-          ? "Sending your request…"
-          : status === "done"
-          ? "Request sent ✓ — check your email"
-          : "Send Booking Request"}
-      </button>
-      <div className="flex items-center gap-3 mt-6 px-4 py-4 bg-green-pale rounded-2xl text-sm text-ink-soft">
-        <Lock size={18} className="text-green-deep shrink-0" />
-        <span>
-          <strong className="text-green-deep">What happens next</strong> — we&apos;ll email you to confirm
-          availability and arrange secure payment via CyberSource Secure Acceptance. Card details are never entered
-          on this site.
-        </span>
-      </div>
-    </form>
+      {FEATURES.roomBookingEnabled && stay && !isBlocked && (
+        <BookingRequestModal
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          site={site}
+          rooms={rooms}
+          arrival={arrival}
+          departure={departure}
+          adults=""
+          children=""
+          nights={stay.nights}
+          seasonLabel={seasonLabel(stay.season)}
+          initialRoomSlug={roomSlug}
+          initialGuests={guests}
+        />
+      )}
+    </div>
   );
 }
 
@@ -444,6 +437,3 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-function FieldError({ text }: { text?: string }) {
-  return <span className="text-xs text-red-600">{text}</span>;
-}
